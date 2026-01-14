@@ -112,9 +112,9 @@ export function Generate() {
 
       // 3. SECURELY DEDUCT CREDITS via RPC (DB Transaction)
       // This prevents race conditions and insecure client modifications
-      const { error: rpcError } = await supabase.rpc('deduct_credits', {
-        job_id: jobId,
-        amount: 10
+      const { error: rpcError } = await supabase.rpc('deduct_credits_v2', {
+        p_job_id: jobId,
+        p_credits: 10
       });
 
       if (rpcError) {

@@ -57,11 +57,10 @@ export function BuyCredits() {
             // For this demo, we'll simulate a successful purchase
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            const { error } = await supabase.rpc('add_credits', {
-                user_id: user.id,
-                amount: pkg.credits,
-                description: `Purchased ${pkg.name}`
-            });
+            const { error } = await supabase.rpc('add_credits_v2', {
+        p_amount: pkg.credits,
+        p_description: `Purchased ${pkg.name}`
+      });
 
             if (error) throw error;
 
