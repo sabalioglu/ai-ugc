@@ -16,9 +16,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Layout } from '@/components/layout/Layout';
+import { useAuth } from '@/hooks/useAuth';
 
 export function Landing() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const features = [
     {
@@ -144,12 +146,12 @@ export function Landing() {
               Perfect for TikTok, Instagram Reels, and YouTube.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" onClick={() => navigate('/auth')} className="text-lg px-8">
+              <Button size="lg" onClick={() => navigate(user ? '/dashboard' : '/auth')} className="text-lg px-8">
                 <Sparkles className="w-5 h-5 mr-2" />
-                Start Free - Get 1 Video
+                {user ? 'Go to Dashboard' : 'Start Free - Get 1 Video'}
               </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate('/auth')}>
-                View Examples
+              <Button size="lg" variant="outline" onClick={() => navigate(user ? '/dashboard' : '/auth')}>
+                {user ? 'My Videos' : 'View Examples'}
               </Button>
             </div>
             <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
@@ -228,11 +230,10 @@ export function Landing() {
             {pricingPlans.map((plan, index) => (
               <Card
                 key={index}
-                className={`relative ${
-                  plan.popular
-                    ? 'border-2 border-purple-600 shadow-2xl scale-105'
-                    : 'border-2'
-                }`}
+                className={`relative ${plan.popular
+                  ? 'border-2 border-purple-600 shadow-2xl scale-105'
+                  : 'border-2'
+                  }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -267,9 +268,9 @@ export function Landing() {
                     className="w-full"
                     variant={plan.popular ? 'default' : 'outline'}
                     size="lg"
-                    onClick={() => navigate('/auth')}
+                    onClick={() => navigate(user ? '/dashboard' : '/auth')}
                   >
-                    {plan.cta}
+                    {user ? 'Select Plan' : plan.cta}
                   </Button>
                 </CardFooter>
               </Card>
@@ -286,9 +287,9 @@ export function Landing() {
           <p className="text-xl mb-10 max-w-2xl mx-auto opacity-90">
             Join thousands of brands creating authentic video content with AI
           </p>
-          <Button size="lg" variant="secondary" onClick={() => navigate('/auth')} className="text-lg px-8">
+          <Button size="lg" variant="secondary" onClick={() => navigate(user ? '/dashboard' : '/auth')} className="text-lg px-8">
             <Sparkles className="w-5 h-5 mr-2" />
-            Get Started Free
+            {user ? 'Continue Creating' : 'Get Started Free'}
           </Button>
         </div>
       </section>
