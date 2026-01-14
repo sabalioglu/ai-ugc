@@ -18,9 +18,10 @@ export function useJobStatus(jobId: string | undefined) {
       return data as VideoJob | null;
     },
     enabled: !!jobId,
-    refetchInterval: (data) => {
-      if (!data) return false;
-      if (data.status === 'completed' || data.status === 'failed') {
+    refetchInterval: (query) => {
+      const jobData = query.state.data;
+      if (!jobData) return false;
+      if (jobData.status === 'completed' || jobData.status === 'failed') {
         return false;
       }
       return 3000;

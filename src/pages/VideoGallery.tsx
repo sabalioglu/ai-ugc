@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Video, Filter } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Select } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Layout } from '@/components/layout/Layout';

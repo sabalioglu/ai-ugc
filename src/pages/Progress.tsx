@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Download, Copy, Sparkles, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';

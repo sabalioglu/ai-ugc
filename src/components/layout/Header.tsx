@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Video, LogOut, User, Settings } from 'lucide-react';
+import { Video, LogOut, User } from 'lucide-react';
 import { Button } from '../ui/button';
 import { CreditBadge } from '../CreditBadge';
 import { useAuth } from '@/hooks/useAuth';

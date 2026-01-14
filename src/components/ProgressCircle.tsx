@@ -9,12 +9,6 @@ export function ProgressCircle({ percentage, size = 200 }: ProgressCircleProps) 
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (percentage / 100) * circumference;
 
-  const getGradientColor = () => {
-    if (percentage < 33) return 'from-blue-500 to-purple-600';
-    if (percentage < 66) return 'from-purple-600 to-purple-500';
-    return 'from-purple-500 to-green-500';
-  };
-
   return (
     <div className="relative inline-flex items-center justify-center">
       <svg width={size} height={size} className="transform -rotate-90">
