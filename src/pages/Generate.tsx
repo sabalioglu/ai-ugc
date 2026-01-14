@@ -126,7 +126,7 @@ export function Generate() {
 
       // 4. TRIGGER n8n WORKFLOW
       // This is triggered only AFTER balance is confirmed and deducted
-      const N8N_WEBHOOK_URL = 'https://n8n.sabalioglu.com/webhook/ugc-video-gen-v2';
+      const N8N_WEBHOOK_URL = 'https://n8n.tsagroupllc.com/webhook/ugc-video-gen';
 
       const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
