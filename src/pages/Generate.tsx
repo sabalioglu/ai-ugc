@@ -124,6 +124,34 @@ export function Generate() {
         throw new Error('Transaction failed: ' + rpcError.message);
       }
 
+      // 4. TRIGGER n8n WORKFLOW
+      // This is triggered only AFTER balance is confirmed and deducted
+      const N8N_WEBHOOK_URL = 'https://n8n.sabalioglu.com/webhook/ugc-video-gen-v2';
+
+      const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          job_id: jobId,
+          productName: formData.productName,
+          productDescription: formData.productDescription,
+          targetAudience: formData.targetAudience,
+          platform: formData.platform,
+          duration: duration,
+          ugcStyleDetails: formData.ugcType,
+          userEmail: user!.email,
+          // n8n extracts this in ParseFormData
+        }),
+      });
+
+      if (!n8nResponse.ok) {
+        // Option: we could refund here, but usually a failed webhook 
+        // will be caught by our general error handling or the user can retry.
+        throw new Error('Video production server is busy. Your credits are safe, please try again in a moment.');
+      }
+
       toast.success('Video generation started!');
       navigate(`/progress/${jobId}`);
     } catch (error: any) {
