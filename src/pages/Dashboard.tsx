@@ -28,10 +28,10 @@ export function Dashboard() {
 
     setIsGettingCredits(true);
     try {
-      const { error } = await supabase
-        .from('user_profiles')
-        .update({ credits_balance: 999999 })
-        .eq('id', user.id);
+      const { error } = await supabase.rpc('add_credits_v2', {
+        p_amount: 1000,
+        p_description: 'Test Credits Granted'
+      });
 
       if (error) throw error;
 
