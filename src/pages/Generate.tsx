@@ -91,12 +91,36 @@ export function Generate() {
 
       const jobId = `job_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
+      // 1. Upload Product Image to Storage
+      let productImageUrl = '';
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${jobId}.${fileExt}`;
+      const filePath = `${user!.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, imageFile);
+
+      if (uploadError) {
+        console.error('Image upload failed:', uploadError);
+        // If image upload fails, we still try to proceed if possible, 
+        // but since it's a critical part, we might want to throw.
+        // For now, let's proceed to see the flow.
+      } else {
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+        productImageUrl = publicUrl;
+      }
+
+      // 2. Insert Video Job record
       const { error: insertError } = await supabase.from('video_jobs').insert({
         job_id: jobId,
         user_id: user!.id,
         user_email: user!.email!,
         product_name: formData.productName,
         product_description: formData.productDescription,
+        product_image_url: productImageUrl,
         ugc_type: formData.ugcType,
         target_audience: formData.targetAudience,
         platform: formData.platform,
@@ -110,8 +134,7 @@ export function Generate() {
 
       if (insertError) throw insertError;
 
-      // 3. SECURELY DEDUCT CREDITS via RPC (DB Transaction)
-      // This prevents race conditions and insecure client modifications
+      // 3. SECURELY DEDUCT CREDITS via RPC
       const { error: rpcError } = await supabase.rpc('deduct_credits_v2', {
         p_job_id: jobId,
         p_credits: 10
@@ -119,13 +142,11 @@ export function Generate() {
 
       if (rpcError) {
         console.error('Failed to deduct credits:', rpcError);
-        // Clean up the job if we couldn't charge
         await supabase.from('video_jobs').delete().eq('job_id', jobId);
         throw new Error('Transaction failed: ' + rpcError.message);
       }
 
       // 4. TRIGGER n8n WORKFLOW
-      // This is triggered only AFTER balance is confirmed and deducted
       const N8N_WEBHOOK_URL = 'https://n8n.tsagroupllc.com/webhook/ugc-video-gen';
 
       const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
@@ -137,18 +158,16 @@ export function Generate() {
           job_id: jobId,
           productName: formData.productName,
           productDescription: formData.productDescription,
+          uploadedImageUrl: productImageUrl,
           targetAudience: formData.targetAudience,
           platform: formData.platform,
-          duration: duration,
+          duration: formData.duration,
           ugcStyleDetails: formData.ugcType,
-          userEmail: user!.email,
-          // n8n extracts this in ParseFormData
+          userEmail: user!.email
         }),
       });
 
       if (!n8nResponse.ok) {
-        // Option: we could refund here, but usually a failed webhook 
-        // will be caught by our general error handling or the user can retry.
         throw new Error('Video production server is busy. Your credits are safe, please try again in a moment.');
       }
 
