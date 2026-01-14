@@ -10,6 +10,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Generate } from './pages/Generate';
 import { ProgressPage } from './pages/Progress';
 import { VideoGallery } from './pages/VideoGallery';
+import { BuyCredits } from './pages/BuyCredits';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -78,6 +79,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <VideoGallery />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/buy-credits"
+        element={
+          <ProtectedRoute>
+            <BuyCredits />
           </ProtectedRoute>
         }
       />

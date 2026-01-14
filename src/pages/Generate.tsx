@@ -110,15 +110,19 @@ export function Generate() {
 
       if (insertError) throw insertError;
 
-      const { error: updateError } = await supabase
-        .from('user_profiles')
-        .update({
-          credits_balance: (profile?.credits_balance || 0) - 10,
-          credits_used: (profile?.credits_used || 0) + 10,
-        })
-        .eq('id', user!.id);
+      // 3. SECURELY DEDUCT CREDITS via RPC (DB Transaction)
+      // This prevents race conditions and insecure client modifications
+      const { error: rpcError } = await supabase.rpc('deduct_credits', {
+        job_id: jobId,
+        amount: 10
+      });
 
-      if (updateError) throw updateError;
+      if (rpcError) {
+        console.error('Failed to deduct credits:', rpcError);
+        // Clean up the job if we couldn't charge
+        await supabase.from('video_jobs').delete().eq('job_id', jobId);
+        throw new Error('Transaction failed: ' + rpcError.message);
+      }
 
       toast.success('Video generation started!');
       navigate(`/progress/${jobId}`);
@@ -152,7 +156,7 @@ export function Generate() {
             <AlertTitle>Insufficient Credits</AlertTitle>
             <AlertDescription>
               You need 10 credits to generate a video. You have {profile?.credits_balance || 0} credits.
-              <Button variant="link" className="ml-2 p-0 h-auto" onClick={() => navigate('/dashboard')}>
+              <Button variant="link" className="ml-2 p-0 h-auto" onClick={() => navigate('/buy-credits')}>
                 Buy More Credits
               </Button>
             </AlertDescription>

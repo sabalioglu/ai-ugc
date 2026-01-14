@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, CreditCard, Video, TrendingUp, ArrowRight, Gift } from 'lucide-react';
+import { Sparkles, CreditCard, Video, ArrowRight, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -131,7 +131,7 @@ export function Dashboard() {
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {profile?.credits_used || 0} credits used this month
                 </p>
-                <Button onClick={() => navigate('/generate')} size="lg" className="w-full sm:w-auto">
+                <Button onClick={() => navigate('/buy-credits')} size="lg" className="w-full sm:w-auto">
                   <Sparkles className="w-5 h-5 mr-2" />
                   Buy More Credits
                 </Button>
