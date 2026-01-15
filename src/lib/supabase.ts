@@ -37,6 +37,7 @@ export interface VideoJob {
     age: number;
     gender: string;
     style: string;
+    image_url?: string;
   };
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress_percentage: number;
