@@ -289,46 +289,67 @@ export function ProgressPage() {
 
               {/* Emerging Assets Grid */}
               {(job.character_model?.image_url || job.product_analysis) && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {job.character_model?.image_url && (
                     <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50 animate-in zoom-in-95 duration-700">
-                      <CardHeader className="p-4 border-b border-gray-100/50 dark:border-gray-800/50">
-                        <CardTitle className="text-xs uppercase tracking-widest text-gray-400 font-bold">Selected Creator Persona</CardTitle>
+                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
+                        <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Creator Persona</CardTitle>
                       </CardHeader>
                       <CardContent className="p-0 aspect-square relative group">
                         <img
                           src={job.character_model.image_url}
-                          alt="AI generated creator"
-                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                          alt="AI Creator"
+                          className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                          <div className="text-white">
-                            <p className="font-bold text-lg">{job.character_model.age}yr • {job.character_model.gender}</p>
-                            <p className="text-sm opacity-80">{job.character_model.style}</p>
-                          </div>
-                        </div>
                       </CardContent>
                     </Card>
                   )}
-                  {job.product_analysis && (
-                    <Card className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50 animate-in translate-y-4 duration-700">
-                      <CardHeader className="p-4 border-b border-gray-100/50 dark:border-gray-800/50">
-                        <CardTitle className="text-xs uppercase tracking-widest text-gray-400 font-bold">AI Strategic insights</CardTitle>
+
+                  {job.start_frame_url && (
+                    <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-blue-100/50 dark:border-blue-900/50 animate-in zoom-in-95 duration-700 delay-100">
+                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
+                        <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Opening Scene</CardTitle>
                       </CardHeader>
-                      <CardContent className="p-6 space-y-6">
-                        <div className="space-y-4">
-                          <div className="p-3 bg-purple-100/30 dark:bg-purple-900/20 rounded-lg border border-purple-200/30 dark:border-purple-800/20">
-                            <p className="text-[10px] font-bold text-purple-600 uppercase mb-1">Target Persona</p>
-                            <p className="text-sm font-medium leading-relaxed">{job.product_analysis.target_audience_summary || "Defining ideal buyer profile..."}</p>
+                      <CardContent className="p-0 aspect-video relative group">
+                        <img
+                          src={job.start_frame_url}
+                          alt="Start Frame"
+                          className="w-full h-full object-cover"
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {job.end_frame_url && (
+                    <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-blue-100/50 dark:border-blue-900/50 animate-in zoom-in-95 duration-700 delay-200">
+                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
+                        <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Closing Scene</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0 aspect-video relative group">
+                        <img
+                          src={job.end_frame_url}
+                          alt="End Frame"
+                          className="w-full h-full object-cover"
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {job.product_analysis && (
+                    <Card className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50 animate-in translate-y-4 duration-700 md:col-span-2">
+                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
+                        <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">AI Strategic insights</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 space-y-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="p-2 bg-purple-100/30 dark:bg-purple-900/20 rounded-lg border border-purple-200/30 dark:border-purple-800/20">
+                            <p className="text-[9px] font-bold text-purple-600 uppercase mb-1">Target Persona</p>
+                            <p className="text-xs font-medium leading-relaxed">{job.product_analysis.target_audience_summary || "Defining ideal buyer profile..."}</p>
                           </div>
-                          <div className="p-3 bg-blue-100/30 dark:bg-blue-900/20 rounded-lg border border-blue-200/30 dark:border-blue-800/20">
-                            <p className="text-[10px] font-bold text-blue-600 uppercase mb-1">Visual Direction</p>
-                            <p className="text-sm font-medium leading-relaxed">{job.product_analysis.visual_vibe || "Setting atmospheric parameters..."}</p>
+                          <div className="p-2 bg-blue-100/30 dark:bg-blue-900/20 rounded-lg border border-blue-200/30 dark:border-blue-800/20">
+                            <p className="text-[9px] font-bold text-blue-600 uppercase mb-1">Visual Direction</p>
+                            <p className="text-xs font-medium leading-relaxed">{job.product_analysis.visual_vibe || "Setting atmospheric parameters..."}</p>
                           </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Badge variant="secondary" className="bg-white/50 dark:bg-gray-800 text-[10px]">AD-READY</Badge>
-                          <Badge variant="secondary" className="bg-white/50 dark:bg-gray-800 text-[10px]">UGC-STRICT</Badge>
                         </div>
                       </CardContent>
                     </Card>

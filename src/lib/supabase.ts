@@ -44,6 +44,8 @@ export interface VideoJob {
   current_step?: string;
   video_url?: string;
   thumbnail_url?: string;
+  start_frame_url?: string;
+  end_frame_url?: string;
   error_message?: string;
   credits_cost: number;
   credits_refunded: number;
