@@ -105,111 +105,158 @@ export function ProgressPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {isProcessing && (
-            <div className="lg:col-span-2 flex justify-center mb-8">
-              <ProgressCircle percentage={job.progress_percentage} size={200} />
-            </div>
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Progress Area */}
+          <div className="lg:col-cols-2 space-y-8">
+            {isProcessing && (
+              <Card className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border-purple-100 dark:border-purple-900">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    Current Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex justify-center py-4">
+                    <ProgressCircle percentage={job.progress_percentage} size={160} />
+                  </div>
+                  <div>
+                    <p className="text-xl font-semibold mb-2 text-center text-purple-600 dark:text-purple-400">
+                      {job.current_step || 'Initializing workflow...'}
+                    </p>
+                    <Progress value={job.progress_percentage} className="h-2 mb-2" />
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <span>{job.status.toUpperCase()}</span>
+                      <span>{job.progress_percentage}%</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-          {isProcessing && (
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  Current Status
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-lg font-medium">{job.current_step || 'Initializing...'}</p>
-                <Progress value={job.progress_percentage} className="h-2" />
-                <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                  <span>Progress</span>
-                  <span>{job.progress_percentage}%</span>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+            {isCompleted && job.video_url && (
+              <Card className="overflow-hidden border-2 border-purple-500 shadow-2xl shadow-purple-500/20">
+                <CardContent className="p-0 bg-black aspect-[9/16] max-h-[600px] flex items-center justify-center">
+                  <video
+                    src={job.video_url}
+                    controls
+                    autoPlay
+                    loop
+                    className="h-full w-auto"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </CardContent>
+              </Card>
+            )}
 
-          {isCompleted && job.video_url && (
-            <Card className="lg:col-span-2">
-              <CardContent className="p-0">
-                <video
-                  src={job.video_url}
-                  controls
-                  poster={job.thumbnail_url}
-                  className="w-full rounded-t-lg"
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </CardContent>
-            </Card>
-          )}
+            {/* Live Preview Section */}
+            {(job.character_model?.image_url || job.product_analysis) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {job.character_model?.image_url && (
+                  <Card className="overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <CardHeader className="p-3">
+                      <CardTitle className="text-sm font-medium">UGC Creator Model</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0 aspect-[1/1] bg-gray-100 dark:bg-gray-800">
+                      <img
+                        src={job.character_model.image_url}
+                        alt="AI Generated Character"
+                        className="w-full h-full object-cover"
+                      />
+                    </CardContent>
+                  </Card>
+                )}
+                {job.product_analysis && (
+                  <Card className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <CardHeader className="p-3">
+                      <CardTitle className="text-sm font-medium">AI Analysis Result</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-3 space-y-2">
+                      <div className="text-xs space-y-1">
+                        <p className="font-bold text-purple-600">Audience:</p>
+                        <p className="line-clamp-2 text-gray-600 dark:text-gray-400">{job.product_analysis.target_audience_summary}</p>
+                      </div>
+                      <div className="text-xs space-y-1">
+                        <p className="font-bold text-purple-600">Setting:</p>
+                        <p className="line-clamp-2 text-gray-600 dark:text-gray-400">{job.product_analysis.visual_vibe}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Product Name</p>
-                <p className="font-semibold">{job.product_name}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">UGC Style</p>
-                <Badge variant="secondary">{job.ugc_type}</Badge>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Target Audience</p>
-                <Badge variant="secondary">{job.target_audience}</Badge>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Duration</p>
-                <p className="font-semibold">{job.duration}s</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Platform</p>
-                <Badge variant="secondary">{job.aspect_ratio}</Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          {job.character_model && (
+          {/* Sidebar Info */}
+          <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>UGC Creator</CardTitle>
-                <CardDescription>AI-generated character for your video</CardDescription>
+                <CardTitle className="text-lg">Project Details</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Character Type</p>
-                  <p className="font-semibold">
-                    {job.character_model.age}-year-old {job.character_model.gender}
-                  </p>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-sm text-gray-500">Job ID</span>
+                  <span className="text-sm font-mono truncate max-w-[120px]">{job.job_id}</span>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Style</p>
-                  <p className="font-semibold">{job.character_model.style}</p>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-sm text-gray-500">Product</span>
+                  <span className="text-sm font-medium">{job.product_name}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-sm text-gray-500">Platform</span>
+                  <Badge variant="outline">{job.platform.toUpperCase()}</Badge>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-sm text-gray-500">Style</span>
+                  <Badge variant="secondary">{job.ugc_type}</Badge>
+                </div>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-sm text-gray-500">Duration</span>
+                  <span className="text-sm font-medium">{job.duration}s</span>
                 </div>
               </CardContent>
             </Card>
-          )}
 
-          {isFailed && job.error_message && (
-            <Card className="lg:col-span-2 border-red-200 dark:border-red-900">
-              <CardHeader>
-                <CardTitle className="text-red-500">Error Details</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700 dark:text-gray-300 mb-4">{job.error_message}</p>
-                {job.credits_refunded > 0 && (
-                  <Badge variant="success">
-                    {job.credits_refunded} credits have been refunded to your account
-                  </Badge>
-                )}
-              </CardContent>
-            </Card>
-          )}
+            {job.character_model && (
+              <Card className="bg-purple-50/50 dark:bg-purple-900/10 border-purple-200/50 dark:border-purple-800/50">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-purple-500" />
+                    AI Profile
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <p className="text-xs text-purple-600 dark:text-purple-400 font-semibold mb-1 uppercase tracking-wider">Creator Concept</p>
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                      {job.character_model.age}-year-old {job.character_model.gender}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1 italic">"{job.character_model.style}"</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {isFailed && job.error_message && (
+              <Card className="border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-900/10">
+                <CardHeader>
+                  <CardTitle className="text-red-600 flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5" />
+                    Error Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-red-800 dark:text-red-300 font-medium">{job.error_message}</p>
+                  {job.credits_refunded > 0 && (
+                    <div className="mt-4 p-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded text-xs font-semibold text-center uppercase tracking-wider border border-green-200 dark:border-green-800">
+                      {job.credits_refunded} credits refunded
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
