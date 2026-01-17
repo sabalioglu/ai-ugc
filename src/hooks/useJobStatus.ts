@@ -33,7 +33,7 @@ export function useJobStatus(jobId: string | undefined) {
     };
   }, [jobId, queryClient]);
 
-  return useQuery({
+  const queryResult = useQuery({
     queryKey: ['job-status', jobId],
     queryFn: async () => {
       if (!jobId) return null;
@@ -48,48 +48,45 @@ export function useJobStatus(jobId: string | undefined) {
       return data as VideoJob | null;
     },
     enabled: !!jobId,
-    // Polling is no longer needed as we use Realtime, 
+    // Polling is no longer needed as we use Realtime,
     // but we can keep a slow fallback just in case or set it to false
     refetchInterval: false,
   });
 
-  // MOCK DATA SIMULATION
+  // PROGRESS SIMULATION
+  // Automatically increases progress to 95% over 10 minutes (600 seconds)
   useEffect(() => {
-    // Only run if we have a job and it is at 40% (Character generated)
-    // We will simulate the next steps for a smooth demo.
-    const currentData = queryClient.getQueryData<VideoJob>(['job-status', jobId]);
+    const job = queryResult.data;
+    if (!jobId || !job) return;
 
-    if (jobId && currentData && currentData.progress_percentage === 40) {
-      console.log('Starting mock simulation sequence...');
+    // Stop simulation if completed or failed
+    if (job.status === 'completed' || job.status === 'failed') return;
 
-      // Step 1: Simulate 60% (Start/End Frames) after 2 seconds
-      const timer1 = setTimeout(() => {
-        console.log('Simulating 60% progress...');
+    const intervalId = setInterval(() => {
+      const createdAt = new Date(job.created_at).getTime();
+      const now = Date.now();
+      const elapsedSeconds = (now - createdAt) / 1000;
+
+      // Target: 95% in 600 seconds
+      let simulatedProgress = (elapsedSeconds / 600) * 95;
+
+      // Cap at 95%
+      if (simulatedProgress > 95) simulatedProgress = 95;
+      if (simulatedProgress < 0) simulatedProgress = 0;
+
+      // Ensure we don't go backwards or override higher real progress
+      const currentProgress = job.progress_percentage || 0;
+
+      if (simulatedProgress > currentProgress) {
         queryClient.setQueryData(['job-status', jobId], (old: VideoJob) => ({
           ...old,
-          progress_percentage: 60,
-          current_step: "Start and end frames created!",
-          start_frame_url: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-          end_frame_url: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+          progress_percentage: simulatedProgress,
         }));
-      }, 3000);
+      }
+    }, 1000);
 
-      // Step 2: Simulate 75% (Script generated) after another 3 seconds
-      const timer2 = setTimeout(() => {
-        console.log('Simulating 75% progress...');
-        queryClient.setQueryData(['job-status', jobId], (old: VideoJob) => ({
-          ...old,
-          progress_percentage: 75,
-          current_step: "Video script generated!"
-        }));
-      }, 6000);
+    return () => clearInterval(intervalId);
+  }, [jobId, queryResult.data, queryClient]);
 
-      return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
-      };
-    }
-  }, [jobId, queryClient]); // Re-run when jobId changes, or we can add dependency on data if needed, but be careful of loops
-
+  return queryResult;
 }
-
