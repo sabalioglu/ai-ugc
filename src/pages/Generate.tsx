@@ -68,15 +68,14 @@ export function Generate() {
     { value: 'instagram', label: 'Instagram Feed (1:1)', aspect: '1:1' },
   ];
 
-  // Cost Calculation Logic: Base (16s) = 30 credits, +15 credits per extra 8s step
+  // Cost Calculation Logic: Base (12s/16s) = 50 credits, +25 credits per extra 8s step
   const calculateCost = (durationStr: string) => {
     const duration = parseInt(durationStr);
-    if (isNaN(duration) || duration < 16) return 30; // Minimum cost
+    if (isNaN(duration) || duration <= 16) return 50; // Minimum cost (Base 50)
 
-    // 16s = 1 base unit
-    // Each additional 8s is an extra step
+    // Base ends at 16s. Each additional 8s beyond 16 starts from 24s.
     const steps = Math.ceil((duration - 16) / 8);
-    return 30 + (steps * 15);
+    return 50 + (steps * 25);
   };
 
   const currentCost = calculateCost(formData.duration);

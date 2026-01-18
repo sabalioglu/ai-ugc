@@ -56,7 +56,7 @@ export function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-2xl">Credits Balance</CardTitle>
-                  <CardDescription>30 credits = 1 video (16s)</CardDescription>
+                  <CardDescription>50 credits = 1 video (12s-16s)</CardDescription>
                 </div>
                 <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center">
                   <CreditCard className="w-8 h-8 text-white" />

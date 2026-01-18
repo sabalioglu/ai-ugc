@@ -13,29 +13,29 @@ const PRICING_PACKAGES = [
     {
         id: 'price_1SqtjlEmd2R9npIsm1yk6rOG',
         name: 'Starter Pack',
-        credits: 50,
+        credits: 500,
         price: 49,
         description: 'Perfect for trying out UGC creation',
         popular: false,
-        features: ['~1-2 Generated Videos', 'Standard Processing', 'Email Support'],
+        features: ['~10 Generated Videos', 'Standard Processing', 'Email Support'],
     },
     {
         id: 'price_1SqtjmEmd2R9npIsYnbtXe6o',
         name: 'Creator Pack',
-        credits: 120,
+        credits: 1200,
         price: 99,
         description: 'Best value for regular creators',
         popular: true,
-        features: ['~4 Generated Videos', 'Priority Processing', 'HD Downloads', 'Priority Support'],
+        features: ['~24 Generated Videos', 'Priority Processing', 'HD Downloads', 'Priority Support'],
     },
     {
         id: 'price_1SqtjmEmd2R9npIsWHwpZwC6',
         name: 'Agency Pack',
-        credits: 300,
+        credits: 3000,
         price: 199,
         description: 'High volume for professional use',
         popular: false,
-        features: ['~10 Generated Videos', 'Instant Processing', '4K Downloads', 'Dedicated Manager'],
+        features: ['~60 Generated Videos', 'Instant Processing', '4K Downloads', 'Dedicated Manager'],
     },
     {
         id: 'enterprise',
@@ -105,7 +105,7 @@ export function BuyCredits() {
                         <h1 className="text-4xl font-bold mb-4 font-outfit text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500">Simple, Transparent Pricing</h1>
                         <p className="text-xl text-gray-600 dark:text-gray-400">
                             Choose the package that suits your creative needs.
-                            <br />1 Video (16s) = 30 Credits.
+                            <br />1 Video (12s-16s) = 50 Credits.
                         </p>
                     </div>
                 </div>
