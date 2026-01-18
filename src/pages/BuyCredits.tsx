@@ -78,7 +78,7 @@ export function BuyCredits() {
             }
         } catch (error: any) {
             console.error('Purchase failed:', error);
-            toast.error('Payment system is not configured. Please contact support.');
+            toast.error(`Payment failed: ${error.message || 'System not configured'}`);
         } finally {
             setLoading(null);
         }
