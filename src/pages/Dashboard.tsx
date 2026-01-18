@@ -21,29 +21,7 @@ export function Dashboard() {
   const queryClient = useQueryClient();
   const { data: profile, isLoading: profileLoading } = useUserProfile(user?.id);
   const { data: recentVideos, isLoading: videosLoading } = useVideoJobs(user?.id);
-  const [isGettingCredits, setIsGettingCredits] = useState(false);
 
-  const handleGetFreeCredits = async () => {
-    if (!user?.id) return;
-
-    setIsGettingCredits(true);
-    try {
-      const { error } = await supabase.rpc('add_credits_v2', {
-        p_amount: 1000,
-        p_description: 'Test Credits Granted'
-      });
-
-      if (error) throw error;
-
-      queryClient.invalidateQueries({ queryKey: ['user-profile', user.id] });
-      toast.success('Credits updated! You now have unlimited credits for testing.');
-    } catch (error: any) {
-      console.error('Error updating credits:', error);
-      toast.error(error.message || 'Failed to update credits');
-    } finally {
-      setIsGettingCredits(false);
-    }
-  };
 
   if (profileLoading) {
     return (
@@ -79,32 +57,7 @@ export function Dashboard() {
           </p>
         </div>
 
-        <Alert variant="warning" className="mb-6 border-2 border-amber-400 bg-amber-50 dark:bg-amber-950">
-          <div className="flex items-center justify-between">
-            <div className="flex items-start gap-3">
-              <Gift className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
-              <div>
-                <AlertTitle className="flex items-center gap-2 mb-1">
-                  Testing Mode
-                  <Badge variant="warning" className="text-xs">
-                    Development Only
-                  </Badge>
-                </AlertTitle>
-                <AlertDescription className="text-amber-800 dark:text-amber-200">
-                  Get unlimited credits to test the video generation system
-                </AlertDescription>
-              </div>
-            </div>
-            <Button
-              onClick={handleGetFreeCredits}
-              disabled={isGettingCredits}
-              className="bg-amber-600 hover:bg-amber-700 text-white whitespace-nowrap"
-            >
-              <Gift className="w-4 h-4 mr-2" />
-              {isGettingCredits ? 'Adding Credits...' : 'Get 10 Free Credits'}
-            </Button>
-          </div>
-        </Alert>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2 border-2 border-purple-200 dark:border-purple-900">
@@ -112,7 +65,7 @@ export function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-2xl">Credits Balance</CardTitle>
-                  <CardDescription>10 credits = 1 video</CardDescription>
+                  <CardDescription>30 credits = 1 video (16s)</CardDescription>
                 </div>
                 <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center">
                   <CreditCard className="w-8 h-8 text-white" />
