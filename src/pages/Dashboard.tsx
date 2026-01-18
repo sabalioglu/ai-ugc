@@ -11,7 +11,6 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 import { useVideoJobs } from '@/hooks/useVideoJobs';
 
 export function Dashboard() {
-  console.log("SECURE DASHBOARD LOADED - VERSION 1.0.5");
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: profile, isLoading: profileLoading } = useUserProfile(user?.id);
@@ -43,9 +42,8 @@ export function Dashboard() {
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 flex items-center gap-4">
+          <h1 className="text-4xl font-bold mb-2">
             Welcome back, {profile?.full_name || 'there'}!
-            <Badge variant="outline" className="text-xs bg-green-500/10 text-green-500 border-green-500">SECURE V1.0.5</Badge>
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             Ready to create amazing UGC videos?
