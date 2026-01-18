@@ -52,6 +52,7 @@ export function Generate() {
   ];
 
   const durations = [
+    { value: '12', label: '12s (1 scene)', description: 'Seedream 1.5 Pro' },
     { value: '16', label: '16s (2 scenes)', description: 'Quick Problem + Solution' },
     { value: '24', label: '24s (3 scenes)', description: 'Story Arc' },
     { value: '32', label: '32s (4 scenes)', description: 'Extended showcase' },
@@ -353,7 +354,7 @@ export function Generate() {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between text-lg">
                     <span>Video Cost:</span>
-                    <span className="font-semibold">10 credits</span>
+                    <span className="font-semibold">{currentCost} credits</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Your Balance:</span>
@@ -375,7 +376,7 @@ export function Generate() {
                 disabled={loading || !hasEnoughCredits || !imageFile}
               >
                 <Sparkles className="w-5 h-5 mr-2" />
-                {loading ? 'Starting Generation...' : 'Generate Video (10 credits)'}
+                {loading ? 'Starting Generation...' : `Generate Video (${currentCost} credits)`}
               </Button>
             </div>
           </div>
