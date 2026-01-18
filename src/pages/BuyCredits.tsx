@@ -72,7 +72,12 @@ export function BuyCredits() {
 
             if (error) throw error;
             if (data?.url) {
-                window.location.href = data.url;
+                // Use window.top to ensure it breaks out of iframes (like Bolt/Stackblitz preview)
+                if (window.top) {
+                    window.top.location.href = data.url;
+                } else {
+                    window.location.href = data.url;
+                }
             } else {
                 throw new Error('Could not create checkout session');
             }
