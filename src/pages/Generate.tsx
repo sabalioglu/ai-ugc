@@ -52,7 +52,7 @@ export function Generate() {
   ];
 
   const durations = [
-    { value: '12', label: '12s (1 scene)', description: 'Seedream 1.5 Pro' },
+    { value: '12', label: '12s (1 scene)', description: 'Short teaser' },
     { value: '16', label: '16s (2 scenes)', description: 'Quick Problem + Solution' },
     { value: '24', label: '24s (3 scenes)', description: 'Story Arc' },
     { value: '32', label: '32s (4 scenes)', description: 'Extended showcase' },
