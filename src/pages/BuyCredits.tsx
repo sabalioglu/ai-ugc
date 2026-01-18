@@ -11,32 +11,42 @@ import { toast } from 'sonner';
 
 const PRICING_PACKAGES = [
     {
-        id: 'starter',
+        id: 'price_1SqtjlEmd2R9npIsm1yk6rOG',
         name: 'Starter Pack',
         credits: 50,
         price: 49,
         description: 'Perfect for trying out UGC creation',
         popular: false,
-        features: ['5 Generated Videos', 'Standard Processing', 'Email Support'],
+        features: ['~1-2 Generated Videos', 'Standard Processing', 'Email Support'],
     },
     {
-        id: 'creator',
+        id: 'price_1SqtjmEmd2R9npIsYnbtXe6o',
         name: 'Creator Pack',
-        credits: 120,
+        credits: 100,
         price: 99,
         description: 'Best value for regular creators',
         popular: true,
-        features: ['12 Generated Videos', 'Priority Processing', 'HD Downloads', 'Priority Support'],
+        features: ['~3-4 Generated Videos', 'Priority Processing', 'HD Downloads', 'Priority Support'],
     },
     {
-        id: 'agency',
+        id: 'price_1SqtjmEmd2R9npIsWHwpZwC6',
         name: 'Agency Pack',
-        credits: 300,
+        credits: 200,
         price: 199,
         description: 'High volume for professional use',
         popular: false,
-        features: ['30 Generated Videos', 'Instant Processing', '4K Downloads', 'Dedicated Manager'],
+        features: ['~6-7 Generated Videos', 'Instant Processing', '4K Downloads', 'Dedicated Manager'],
     },
+    {
+        id: 'enterprise',
+        name: 'Enterprise',
+        credits: 'Custom',
+        price: 'Contact',
+        description: 'For large scale organizations',
+        popular: false,
+        features: ['Unlimited Scale', 'API Access', 'Custom AI Models', 'SLA Support'],
+        isContact: true
+    }
 ];
 
 export function BuyCredits() {
@@ -53,22 +63,22 @@ export function BuyCredits() {
         setLoading(pkg.id);
 
         try {
-            // In a real app, this would redirect to Stripe
-            // For this demo, we'll simulate a successful purchase
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            const { error } = await supabase.rpc('add_credits_v2', {
-        p_amount: pkg.credits,
-        p_description: `Purchased ${pkg.name}`
-      });
+            const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+                body: {
+                    priceId: pkg.id,
+                    userId: user.id
+                },
+            });
 
             if (error) throw error;
-
-            toast.success(`Successfully purchased ${pkg.credits} credits!`);
-            navigate('/dashboard');
+            if (data?.url) {
+                window.location.href = data.url;
+            } else {
+                throw new Error('Could not create checkout session');
+            }
         } catch (error: any) {
             console.error('Purchase failed:', error);
-            toast.error('Purchase failed. Please try again.');
+            toast.error('Payment system is not configured. Please contact support.');
         } finally {
             setLoading(null);
         }
@@ -89,7 +99,7 @@ export function BuyCredits() {
                         <h1 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
                         <p className="text-xl text-gray-600 dark:text-gray-400">
                             Choose the package that suits your creative needs.
-                            <br />1 Video = 10 Credits.
+                            <br />1 Video (16s) = 30 Credits.
                         </p>
                     </div>
                 </div>
@@ -114,8 +124,10 @@ export function BuyCredits() {
                                 <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                                 <CardDescription>{pkg.description}</CardDescription>
                                 <div className="mt-4 flex items-baseline gap-1">
-                                    <span className="text-4xl font-bold">${pkg.price}</span>
-                                    <span className="text-gray-500">/one-time</span>
+                                    <span className="text-4xl font-bold">
+                                        {typeof pkg.price === 'number' ? `$${pkg.price}` : pkg.price}
+                                    </span>
+                                    {typeof pkg.price === 'number' && <span className="text-gray-500">/one-time</span>}
                                 </div>
                                 <div className="mt-2 text-purple-600 font-medium">
                                     {pkg.credits} Credits
@@ -135,13 +147,26 @@ export function BuyCredits() {
                                 <Button
                                     className={`w-full ${pkg.popular ? 'bg-purple-600 hover:bg-purple-700' : ''}`}
                                     size="lg"
-                                    onClick={() => handlePurchase(pkg)}
-                                    disabled={!!loading}
+                                    onClick={() => {
+                                        if (pkg.isContact) {
+                                            window.location.href = 'mailto:sales@aiugc.com';
+                                        } else {
+                                            handlePurchase(pkg);
+                                        }
+                                    }}
+                                    disabled={!!loading && !pkg.isContact}
+                                    variant={pkg.isContact ? "outline" : "default"}
                                 >
                                     {loading === pkg.id ? 'Processing...' : (
                                         <>
-                                            <Sparkles className="w-4 h-4 mr-2" />
-                                            Buy {pkg.credits} Credits
+                                            {pkg.isContact ? (
+                                                'Contact Sales'
+                                            ) : (
+                                                <>
+                                                    <Sparkles className="w-4 h-4 mr-2" />
+                                                    Buy {pkg.credits} Credits
+                                                </>
+                                            )}
                                         </>
                                     )}
                                 </Button>

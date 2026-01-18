@@ -67,7 +67,19 @@ export function Generate() {
     { value: 'instagram', label: 'Instagram Feed (1:1)', aspect: '1:1' },
   ];
 
-  const hasEnoughCredits = (profile?.credits_balance || 0) >= 10;
+  // Cost Calculation Logic: Base (16s) = 30 credits, +15 credits per extra 8s step
+  const calculateCost = (durationStr: string) => {
+    const duration = parseInt(durationStr);
+    if (isNaN(duration) || duration < 16) return 30; // Minimum cost
+
+    // 16s = 1 base unit
+    // Each additional 8s is an extra step
+    const steps = Math.ceil((duration - 16) / 8);
+    return 30 + (steps * 15);
+  };
+
+  const currentCost = calculateCost(formData.duration);
+  const hasEnoughCredits = (profile?.credits_balance || 0) >= currentCost;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,7 +141,7 @@ export function Generate() {
         aspect_ratio: platform?.aspect || '9:16',
         status: 'pending',
         progress_percentage: 0,
-        credits_cost: 10,
+        credits_cost: currentCost,
       });
 
       if (insertError) throw insertError;
@@ -202,7 +214,7 @@ export function Generate() {
             <AlertCircle className="w-5 h-5" />
             <AlertTitle>Insufficient Credits</AlertTitle>
             <AlertDescription>
-              You need 10 credits to generate a video. You have {profile?.credits_balance || 0} credits.
+              You need {currentCost} credits for this video duration. You have {profile?.credits_balance || 0} credits.
               <Button variant="link" className="ml-2 p-0 h-auto" onClick={() => navigate('/buy-credits')}>
                 Buy More Credits
               </Button>
