@@ -57,51 +57,47 @@ export function Landing() {
 
   const pricingPlans = [
     {
-      name: 'FREE',
-      price: '$0',
-      period: '/month',
-      description: 'Perfect for testing',
-      credits: '10 credits (1 video)',
+      name: 'Starter Pack',
+      price: '$49',
+      period: '/one-time',
+      description: 'Perfect for trying out UGC creation',
+      credits: '500 Credits',
       features: [
-        '16-64s videos',
-        'All UGC styles',
-        'All platforms (9:16, 16:9, 1:1)',
-        'Standard processing',
-        'Community support',
+        '~10 Generated Videos',
+        'Standard Processing',
+        'Email Support',
       ],
-      cta: 'Start Free',
+      cta: 'Buy 500 Credits',
       popular: false,
     },
     {
-      name: 'PRO',
-      price: '$49',
-      period: '/month',
-      description: 'For growing brands',
-      credits: '100 credits (10 videos)',
+      name: 'Creator Pack',
+      price: '$99',
+      period: '/one-time',
+      description: 'Best value for regular creators',
+      credits: '1200 Credits',
       features: [
-        'Everything in Free',
-        'Priority processing',
-        'Webhook notifications',
-        'Advanced analytics',
-        'Email support',
+        '~24 Generated Videos',
+        'Priority Processing',
+        'HD Downloads',
+        'Priority Support',
       ],
-      cta: 'Get Started',
+      cta: 'Buy 1200 Credits',
       popular: true,
     },
     {
-      name: 'ENTERPRISE',
-      price: '$299',
-      period: '/month',
-      description: 'For agencies & teams',
-      credits: '1000 credits (100 videos)',
+      name: 'Agency Pack',
+      price: '$199',
+      period: '/one-time',
+      description: 'High volume for professional use',
+      credits: '3000 Credits',
       features: [
-        'Everything in Pro',
-        'API access',
-        'Unlimited duration',
-        'Custom branding',
-        'Dedicated support',
+        '~60 Generated Videos',
+        'Instant Processing',
+        '4K Downloads',
+        'Dedicated Manager',
       ],
-      cta: 'Contact Sales',
+      cta: 'Buy 3000 Credits',
       popular: false,
     },
   ];
@@ -155,7 +151,7 @@ export function Landing() {
               </Button>
             </div>
             <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-              No credit card required • 10 free credits
+              No credit card required
             </p>
           </div>
         </div>
@@ -222,7 +218,7 @@ export function Landing() {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Simple, Transparent Pricing</h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Choose the plan that fits your needs. 10 credits = 1 video.
+              Choose the package that suits your creative needs.
             </p>
           </div>
 
