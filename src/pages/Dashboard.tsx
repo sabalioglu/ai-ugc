@@ -1,24 +1,18 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, CreditCard, Video, ArrowRight, Gift } from 'lucide-react';
+import { CreditCard, Video, Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Layout } from '@/components/layout/Layout';
 import { VideoCard } from '@/components/VideoCard';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useVideoJobs } from '@/hooks/useVideoJobs';
-import { supabase } from '@/lib/supabase';
-import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
 
 export function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const queryClient = useQueryClient();
   const { data: profile, isLoading: profileLoading } = useUserProfile(user?.id);
   const { data: recentVideos, isLoading: videosLoading } = useVideoJobs(user?.id);
 
