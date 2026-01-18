@@ -16,7 +16,6 @@ export function Dashboard() {
   const { data: profile, isLoading: profileLoading } = useUserProfile(user?.id);
   const { data: recentVideos, isLoading: videosLoading } = useVideoJobs(user?.id);
 
-
   if (profileLoading) {
     return (
       <Layout>
@@ -37,7 +36,7 @@ export function Dashboard() {
     enterprise: { label: 'Enterprise', color: 'bg-blue-600' },
   };
 
-  const tier = tierConfig[profile?.subscription_tier || 'free'];
+  const tier = tierConfig[profile?.subscription_tier as keyof typeof tierConfig || 'free'];
 
   return (
     <Layout>
@@ -50,8 +49,6 @@ export function Dashboard() {
             Ready to create amazing UGC videos?
           </p>
         </div>
-
-
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2 border-2 border-purple-200 dark:border-purple-900">
@@ -74,14 +71,16 @@ export function Dashboard() {
                   </span>
                   <span className="text-2xl text-gray-600 dark:text-gray-400">credits</span>
                 </div>
-                <Progress value={100 - creditsUsagePercentage} className="h-3" />
+                <Progress value={Math.max(0, 100 - (creditsUsagePercentage || 0))} className="h-3" />
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {profile?.credits_used || 0} credits used this month
                 </p>
-                <Button onClick={() => navigate('/buy-credits')} size="lg" className="w-full sm:w-auto">
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Buy More Credits
-                </Button>
+                <div className="flex gap-4">
+                  <Button onClick={() => navigate('/buy-credits')} size="lg" className="flex-1 sm:flex-none">
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Buy More Credits
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -110,7 +109,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        <Card className="mb-8 bg-gradient-to-r from-purple-600 to-blue-500 text-white border-0">
+        <Card className="mb-8 bg-gradient-to-r from-purple-600 to-blue-500 text-white border-0 shadow-lg">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div>
@@ -123,7 +122,7 @@ export function Dashboard() {
                 size="lg"
                 variant="secondary"
                 onClick={() => navigate('/generate')}
-                className="whitespace-nowrap"
+                className="whitespace-nowrap hover:scale-105 transition-transform"
               >
                 <Sparkles className="w-5 h-5 mr-2" />
                 Start Creating

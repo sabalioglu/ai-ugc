@@ -22,20 +22,20 @@ const PRICING_PACKAGES = [
     {
         id: 'price_1SqtjmEmd2R9npIsYnbtXe6o',
         name: 'Creator Pack',
-        credits: 100,
+        credits: 120,
         price: 99,
         description: 'Best value for regular creators',
         popular: true,
-        features: ['~3-4 Generated Videos', 'Priority Processing', 'HD Downloads', 'Priority Support'],
+        features: ['~4 Generated Videos', 'Priority Processing', 'HD Downloads', 'Priority Support'],
     },
     {
         id: 'price_1SqtjmEmd2R9npIsWHwpZwC6',
         name: 'Agency Pack',
-        credits: 200,
+        credits: 300,
         price: 199,
         description: 'High volume for professional use',
         popular: false,
-        features: ['~6-7 Generated Videos', 'Instant Processing', '4K Downloads', 'Dedicated Manager'],
+        features: ['~10 Generated Videos', 'Instant Processing', '4K Downloads', 'Dedicated Manager'],
     },
     {
         id: 'enterprise',
@@ -71,19 +71,20 @@ export function BuyCredits() {
             });
 
             if (error) throw error;
+
             if (data?.url) {
-                // Use window.top to ensure it breaks out of iframes (like Bolt/Stackblitz preview)
+                // Breaking out of iframes (Bolt/Stackblitz)
                 if (window.top) {
                     window.top.location.href = data.url;
                 } else {
                     window.location.href = data.url;
                 }
             } else {
-                throw new Error('Could not create checkout session');
+                throw new Error(data?.error || 'Could not create checkout session');
             }
         } catch (error: any) {
             console.error('Purchase failed:', error);
-            toast.error(`Payment failed: ${error.message || 'System not configured'}`);
+            toast.error(`Payment failed: ${error.message || 'Check your internet connection'}`);
         } finally {
             setLoading(null);
         }
@@ -101,7 +102,7 @@ export function BuyCredits() {
                         <span>Buy Credits</span>
                     </div>
                     <div className="text-center max-w-2xl mx-auto mb-12">
-                        <h1 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
+                        <h1 className="text-4xl font-bold mb-4 font-outfit text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500">Simple, Transparent Pricing</h1>
                         <p className="text-xl text-gray-600 dark:text-gray-400">
                             Choose the package that suits your creative needs.
                             <br />1 Video (16s) = 30 Credits.
@@ -113,7 +114,7 @@ export function BuyCredits() {
                     {PRICING_PACKAGES.map((pkg) => (
                         <Card
                             key={pkg.id}
-                            className={`relative flex flex-col ${pkg.popular
+                            className={`relative flex flex-col transition-all hover:shadow-2xl ${pkg.popular
                                 ? 'border-2 border-purple-500 shadow-xl scale-105 z-10'
                                 : 'border border-gray-200 dark:border-gray-800'
                                 }`}
@@ -134,7 +135,7 @@ export function BuyCredits() {
                                     </span>
                                     {typeof pkg.price === 'number' && <span className="text-gray-500">/one-time</span>}
                                 </div>
-                                <div className="mt-2 text-purple-600 font-medium">
+                                <div className="mt-2 text-purple-600 font-bold text-lg">
                                     {pkg.credits} Credits
                                 </div>
                             </CardHeader>
@@ -150,7 +151,7 @@ export function BuyCredits() {
                             </CardContent>
                             <CardFooter>
                                 <Button
-                                    className={`w-full ${pkg.popular ? 'bg-purple-600 hover:bg-purple-700' : ''}`}
+                                    className={`w-full ${pkg.popular ? 'bg-purple-600 hover:bg-purple-700 shadow-purple-200' : ''}`}
                                     size="lg"
                                     onClick={() => {
                                         if (pkg.isContact) {
@@ -162,7 +163,7 @@ export function BuyCredits() {
                                     disabled={!!loading && !pkg.isContact}
                                     variant={pkg.isContact ? "outline" : "default"}
                                 >
-                                    {loading === pkg.id ? 'Processing...' : (
+                                    {loading === pkg.id ? 'Connecting to Stripe...' : (
                                         <>
                                             {pkg.isContact ? (
                                                 'Contact Sales'
