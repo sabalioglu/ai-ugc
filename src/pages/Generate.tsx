@@ -52,14 +52,14 @@ export function Generate() {
   ];
 
   const durations = [
-    { value: '12', label: '12 second videos (1 scene)', description: 'Short teaser' },
-    { value: '16', label: '16 second videos (2 scenes)', description: 'Quick Problem + Solution' },
-    { value: '24', label: '24 second videos (3 scenes)', description: 'Story Arc' },
-    { value: '32', label: '32 second videos (4 scenes)', description: 'Extended showcase' },
-    { value: '40', label: '40 second videos (5 scenes)', description: 'Detailed presentation' },
-    { value: '48', label: '48 second videos (6 scenes)', description: 'Complete story' },
-    { value: '56', label: '56 second videos (7 scenes)', description: 'Premium content' },
-    { value: '64', label: '64 second videos (8 scenes)', description: 'Full narrative' },
+    { value: '12', label: '12 Sec Video - 1 Video - 40 Credits', description: 'Short teaser' },
+    { value: '16', label: '16 Sec Video - 2 Videos - 50 Credits', description: 'Quick Problem + Solution' },
+    { value: '24', label: '24 Sec Video - 3 Videos - 60 Credits', description: 'Story Arc' },
+    { value: '32', label: '32 Sec Video - 4 Videos - 70 Credits', description: 'Extended showcase' },
+    { value: '40', label: '40 Sec Video - 5 Videos - 80 Credits', description: 'Detailed presentation' },
+    { value: '48', label: '48 Sec Video - 6 Videos - 90 Credits', description: 'Complete story' },
+    { value: '56', label: '56 Sec Video - 7 Videos - 100 Credits', description: 'Premium content' },
+    { value: '64', label: '64 Sec Video - 8 Videos - 110 Credits', description: 'Full narrative' },
   ];
 
   const platforms = [
