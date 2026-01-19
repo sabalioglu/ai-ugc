@@ -45,6 +45,27 @@ export function useJobStatus(jobId: string | undefined) {
         .maybeSingle();
 
       if (error) throw error;
+
+      // Transform video_url_1, video_url_2, etc. into scene_videos array
+      if (data) {
+        const sceneVideos = [];
+        for (let i = 1; i <= 8; i++) {
+          const videoUrl = (data as any)[`video_url_${i}`];
+          if (videoUrl) {
+            sceneVideos.push({
+              scene_number: i,
+              video_url: videoUrl,
+            });
+          }
+        }
+
+        // Add scene_videos to the data object
+        return {
+          ...data,
+          scene_videos: sceneVideos.length > 0 ? sceneVideos : undefined,
+        } as VideoJob;
+      }
+
       return data as VideoJob | null;
     },
     enabled: !!jobId,

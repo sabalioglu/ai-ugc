@@ -24,7 +24,27 @@ export function useVideoJobs(
       const { data, error } = await query;
 
       if (error) throw error;
-      return (data as VideoJob[]) || [];
+
+      // Transform video_url_1, video_url_2, etc. into scene_videos array for each job
+      const transformedData = (data || []).map((job: any) => {
+        const sceneVideos = [];
+        for (let i = 1; i <= 8; i++) {
+          const videoUrl = job[`video_url_${i}`];
+          if (videoUrl) {
+            sceneVideos.push({
+              scene_number: i,
+              video_url: videoUrl,
+            });
+          }
+        }
+
+        return {
+          ...job,
+          scene_videos: sceneVideos.length > 0 ? sceneVideos : undefined,
+        };
+      });
+
+      return (transformedData as VideoJob[]) || [];
     },
     enabled: !!userId,
   });
