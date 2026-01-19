@@ -34,17 +34,24 @@ export function VideoCard({ job, onDelete }: VideoCardProps) {
     }
   };
 
+  // Determine aspect ratio class based on job.aspect_ratio
+  const getAspectRatioClass = () => {
+    if (job.aspect_ratio === '9:16') return 'aspect-[9/16]';
+    if (job.aspect_ratio === '1:1') return 'aspect-square';
+    return 'aspect-video'; // 16:9 default
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
       <div
-        className="relative aspect-video bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 cursor-pointer"
+        className={`relative ${getAspectRatioClass()} bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 cursor-pointer`}
         onClick={() => navigate(`/progress/${job.job_id}`)}
       >
         {job.video_url ? (
           <video
             src={job.video_url}
             controls
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain bg-black"
             onClick={(e) => e.stopPropagation()}
           >
             Your browser does not support the video tag.
@@ -54,7 +61,7 @@ export function VideoCard({ job, onDelete }: VideoCardProps) {
             <img
               src={job.thumbnail_url}
               alt={job.product_name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain bg-black"
             />
             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <Play className="w-12 h-12 text-white" />
