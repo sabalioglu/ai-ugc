@@ -173,7 +173,6 @@ export function Landing() {
                   <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center shadow-lg">
                     <step.icon className="w-10 h-10 text-white" />
                   </div>
-                  <div className="absolute top-10 left-1/2 w-full h-px bg-gradient-to-r from-purple-600 to-blue-500 hidden md:block" style={{ display: index === 2 ? 'none' : 'block' }} />
                   <h3 className="text-2xl font-semibold mb-3">{step.title}</h3>
                   <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
                 </div>

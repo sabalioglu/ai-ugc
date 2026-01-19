@@ -52,14 +52,14 @@ export function Generate() {
   ];
 
   const durations = [
-    { value: '12', label: '12s (1 scene)', description: 'Short teaser' },
-    { value: '16', label: '16s (2 scenes)', description: 'Quick Problem + Solution' },
-    { value: '24', label: '24s (3 scenes)', description: 'Story Arc' },
-    { value: '32', label: '32s (4 scenes)', description: 'Extended showcase' },
-    { value: '40', label: '40s (5 scenes)', description: 'Detailed presentation' },
-    { value: '48', label: '48s (6 scenes)', description: 'Complete story' },
-    { value: '56', label: '56s (7 scenes)', description: 'Premium content' },
-    { value: '64', label: '64s (8 scenes)', description: 'Full narrative' },
+    { value: '12', label: '12 second videos (1 scene)', description: 'Short teaser' },
+    { value: '16', label: '16 second videos (2 scenes)', description: 'Quick Problem + Solution' },
+    { value: '24', label: '24 second videos (3 scenes)', description: 'Story Arc' },
+    { value: '32', label: '32 second videos (4 scenes)', description: 'Extended showcase' },
+    { value: '40', label: '40 second videos (5 scenes)', description: 'Detailed presentation' },
+    { value: '48', label: '48 second videos (6 scenes)', description: 'Complete story' },
+    { value: '56', label: '56 second videos (7 scenes)', description: 'Premium content' },
+    { value: '64', label: '64 second videos (8 scenes)', description: 'Full narrative' },
   ];
 
   const platforms = [
@@ -68,14 +68,15 @@ export function Generate() {
     { value: 'instagram', label: 'Instagram Feed (1:1)', aspect: '1:1' },
   ];
 
-  // Cost Calculation Logic: Base (12s/16s) = 50 credits, +25 credits per extra 8s step
+  // Cost Calculation Logic: 12s=40cr, 16s=50cr, 24s=60cr, etc. (+10cr per step)
   const calculateCost = (durationStr: string) => {
-    const duration = parseInt(durationStr);
-    if (isNaN(duration) || duration <= 16) return 50; // Minimum cost (Base 50)
+    const durationOptions = ['12', '16', '24', '32', '40', '48', '56', '64'];
+    const index = durationOptions.indexOf(durationStr);
 
-    // Base ends at 16s. Each additional 8s beyond 16 starts from 24s.
-    const steps = Math.ceil((duration - 16) / 8);
-    return 50 + (steps * 25);
+    if (index === -1) return 40; // Default to base cost if not found
+
+    // Base cost is 40 credits for 12s (index 0), +10 credits per index
+    return 40 + (index * 10);
   };
 
   const currentCost = calculateCost(formData.duration);
@@ -149,7 +150,7 @@ export function Generate() {
       // 3. SECURELY DEDUCT CREDITS via RPC
       const { error: rpcError } = await supabase.rpc('deduct_credits_v2', {
         p_job_id: jobId,
-        p_credits: 10
+        p_credits: currentCost
       });
 
       if (rpcError) {
@@ -193,7 +194,7 @@ export function Generate() {
     }
   };
 
-  const remainingCredits = (profile?.credits_balance || 0) - 10;
+  const remainingCredits = (profile?.credits_balance || 0) - currentCost;
 
   return (
     <Layout>
