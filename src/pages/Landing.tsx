@@ -120,7 +120,7 @@ export function Landing() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-5xl mx-auto text-center"
           >
-            <h1 className="text-6xl md:text-9xl font-black mb-10 tracking-tighter leading-[0.85] text-studio-text-main">
+            <h1 className="text-5xl md:text-9xl font-black mb-10 tracking-tighter leading-[0.85] text-studio-text-main">
               GENERATE ADS<br />
               <span className="studio-italic-serif text-studio-purple">that convert</span>
             </h1>
@@ -167,7 +167,7 @@ export function Landing() {
 
       {/* Structured Showcase Section */}
       <section id="portfolio" className="py-32 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6 md:px-4">
           <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
             <div className="max-w-2xl">
               <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-tighter text-studio-text-main uppercase">
@@ -305,7 +305,7 @@ export function Landing() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-studio-purple/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-studio-neon-lime/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-6 md:px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -313,12 +313,12 @@ export function Landing() {
             transition={{ duration: 1, ease: "easeOut" }}
             className="max-w-4xl mx-auto"
           >
-            <h2 className="text-7xl md:text-[10rem] font-black mb-12 tracking-tighter leading-[0.8] text-studio-text-main">
+            <h2 className="text-6xl md:text-[10rem] font-black mb-12 tracking-tighter leading-[0.8] text-studio-text-main">
               READY TO<br />
               <span className="studio-italic-serif text-studio-purple">scale?</span>
             </h2>
 
-            <p className="text-xl md:text-3xl mb-16 text-studio-text-muted max-w-2xl mx-auto font-medium leading-relaxed tracking-tight">
+            <p className="text-lg md:text-3xl mb-16 text-studio-text-muted max-w-2xl mx-auto font-medium leading-relaxed tracking-tight">
               Join the vanguard of digital creators. Generate your first high-performance AI production in minutes.
             </p>
 
@@ -338,10 +338,10 @@ export function Landing() {
                 </div>
 
                 {/* Visual trust signals */}
-                <div className="flex gap-4 opacity-30 grayscale mt-4">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" className="h-4" alt="Visa" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-4" alt="Mastercard" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" className="h-4" alt="PayPal" />
+                <div className="flex gap-4 opacity-50 grayscale mt-4">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" className="h-5" alt="Visa" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-5" alt="Mastercard" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" className="h-5" alt="PayPal" />
                 </div>
               </div>
             </div>

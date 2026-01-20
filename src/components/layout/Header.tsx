@@ -18,14 +18,14 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-studio-border bg-white/70 backdrop-blur-xl">
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-        <Link to={user ? '/dashboard' : '/'} className="flex flex-col items-start group">
-          <span className="text-3xl font-black italic tracking-tighter text-studio-text-main leading-none">
+        <Link to={user ? '/dashboard' : '/'} className="flex flex-col items-start group shrink-0">
+          <span className="text-2xl md:text-3xl font-black italic tracking-tighter text-studio-text-main leading-none">
             agentized.io
           </span>
-          <div className="w-[160px] h-[4px] bg-studio-neon-lime -mt-1 shadow-[0_2_8px_rgba(204,255,0,0.3)]" />
+          <div className="w-full h-[3px] md:h-[4px] bg-studio-neon-lime -mt-0.5 md:-mt-1 shadow-[0_2_8px_rgba(204,255,0,0.3)]" />
         </Link>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2 md:gap-6">
           {user && profile ? (
             <>
               <CreditBadge credits={profile.credits_balance} />
