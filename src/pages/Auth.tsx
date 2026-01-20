@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Video, Mail, Lock, User as UserIcon } from 'lucide-react';
+import { Mail, Lock, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -56,8 +56,13 @@ export function Auth() {
 
       if (signUpError) throw signUpError;
 
-      if (data.user) {
-        toast.success('Account created successfully!');
+      if (data.user && !data.session) {
+        toast.success('Registration successful! Please check your email inbox (and spam folder) to verify your account.', {
+          duration: 10000,
+        });
+        setError('Verification email sent! Please check your inbox to confirm your account before logging in.');
+      } else if (data.session) {
+        toast.success('Account created and confirmed!');
         navigate('/dashboard');
       }
     } catch (err: any) {
@@ -103,32 +108,30 @@ export function Auth() {
   const passwordStrength = getPasswordStrength(signUpData.password);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-gray-50 dark:from-gray-900 dark:via-purple-950 dark:to-gray-900 p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center">
-              <Video className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-              UGC Studio
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md animate-studio-fade">
+        <div className="text-center mb-10">
+          <div className="flex flex-col items-center group mb-4">
+            <span className="text-5xl font-black italic tracking-tighter text-white leading-none">
+              agentized.io
             </span>
+            <div className="w-[200px] h-[3px] bg-studio-neon-lime -mt-1 shadow-[0_0_10px_rgba(204,255,0,0.5)]" />
           </div>
-          <p className="text-gray-600 dark:text-gray-300">
-            Create authentic UGC videos with AI
+          <p className="text-studio-text-muted text-lg font-light tracking-tight">
+            Comprehensive AI Creative Agency
           </p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Welcome</CardTitle>
-            <CardDescription>Sign up or login to start creating videos</CardDescription>
+        <Card className="studio-glass-card border-none overflow-hidden">
+          <CardHeader className="text-center pb-2">
+            <CardTitle className="text-3xl font-bold tracking-tighter">THE STUDIO</CardTitle>
+            <CardDescription className="text-studio-text-muted">Sign up or login to start your production</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signup">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-                <TabsTrigger value="login">Login</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/5 p-1 rounded-lg">
+                <TabsTrigger value="signup" className="data-[state=active]:bg-studio-neon-lime data-[state=active]:text-black transition-all">Sign Up</TabsTrigger>
+                <TabsTrigger value="login" className="data-[state=active]:bg-studio-neon-lime data-[state=active]:text-black transition-all">Login</TabsTrigger>
               </TabsList>
 
               <TabsContent value="signup">
@@ -214,15 +217,15 @@ export function Auth() {
                     </Alert>
                   )}
 
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Creating Account...' : 'Create Account'}
+                  <Button type="submit" className="w-full studio-neon-button h-12 text-lg" disabled={loading}>
+                    {loading ? 'Entering...' : 'Create Studio Account'}
                   </Button>
 
                   <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                     Already have an account?{' '}
                     <button
                       type="button"
-                      className="text-purple-600 hover:underline dark:text-purple-400"
+                      className="text-studio-neon-lime hover:underline"
                       onClick={() => {
                         const loginTab = document.querySelector('[value="login"]') as HTMLElement;
                         loginTab?.click();
@@ -287,8 +290,8 @@ export function Auth() {
                     </button>
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Logging in...' : 'Login'}
+                  <Button type="submit" className="w-full studio-neon-button h-12 text-lg" disabled={loading}>
+                    {loading ? 'Processing...' : 'Enter Studio'}
                   </Button>
                 </form>
               </TabsContent>

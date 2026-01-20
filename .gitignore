@@ -23,3 +23,6 @@ dist-ssr
 .env
 
 check_db.ts
+
+# Local Netlify folder
+.netlify

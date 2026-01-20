@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "title": "Neon Nights Ad",
+    "category": "AI Ads",
+    "thumbnail": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop",
+    "type": "tall"
+  },
+  {
+    "id": "2",
+    "title": "Cinematic Forest",
+    "category": "Cinematic",
+    "thumbnail": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071&auto=format&fit=crop",
+    "type": "standard"
+  },
+  {
+    "id": "3",
+    "title": "Fashion Showcase",
+    "category": "Social Content",
+    "thumbnail": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop",
+    "type": "wide"
+  },
+  {
+    "id": "4",
+    "title": "Cyberpunk Portrait",
+    "category": "Cinematic",
+    "thumbnail": "https://images.unsplash.com/photo-1542393545-10f5cde2c810?q=80&w=1935&auto=format&fit=crop",
+    "type": "standard"
+  },
+  {
+    "id": "5",
+    "title": "Minimalist Product",
+    "category": "AI Ads",
+    "thumbnail": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop",
+    "type": "tall"
+  },
+  {
+    "id": "6",
+    "title": "Street Style",
+    "category": "Social Content",
+    "thumbnail": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1920&auto=format&fit=crop",
+    "type": "standard"
+  }
+]

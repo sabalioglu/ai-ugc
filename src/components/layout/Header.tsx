@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Video, LogOut, User } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import { Button } from '../ui/button';
 import { CreditBadge } from '../CreditBadge';
 import { useAuth } from '@/hooks/useAuth';
@@ -16,25 +16,23 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-lg dark:border-gray-800 dark:bg-gray-900/80">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to={user ? '/dashboard' : '/'} className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <Video className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-            UGC Studio
+    <header className="sticky top-0 z-50 w-full border-b border-studio-border bg-white/70 backdrop-blur-xl">
+      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+        <Link to={user ? '/dashboard' : '/'} className="flex flex-col items-start group">
+          <span className="text-3xl font-black italic tracking-tighter text-studio-text-main leading-none">
+            agentized.io
           </span>
+          <div className="w-[160px] h-[4px] bg-studio-neon-lime -mt-1 shadow-[0_2_8px_rgba(204,255,0,0.3)]" />
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           {user && profile ? (
             <>
               <CreditBadge credits={profile.credits_balance} />
 
-              <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              <div className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-studio-surface border border-studio-border shadow-sm">
+                <User className="w-4 h-4 text-studio-text-muted" />
+                <span className="text-sm font-bold text-studio-text-main">
                   {profile.full_name || profile.email}
                 </span>
               </div>
@@ -44,16 +42,17 @@ export function Header() {
                 size="icon"
                 onClick={handleSignOut}
                 title="Sign Out"
+                className="text-studio-text-muted hover:text-studio-text-main hover:bg-studio-surface"
               >
                 <LogOut className="w-5 h-5" />
               </Button>
             </>
           ) : (
             <>
-              <Button variant="ghost" onClick={() => navigate('/auth')}>
+              <Button variant="ghost" onClick={() => navigate('/auth')} className="text-studio-text-main font-bold hover:bg-studio-surface">
                 Login
               </Button>
-              <Button onClick={() => navigate('/auth')}>
+              <Button onClick={() => navigate('/auth')} className="studio-neon-button h-11 px-8">
                 Get Started
               </Button>
             </>

@@ -42,7 +42,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  return user ? <>{children}</> : null;
+  const isConfirmed = user && user.email_confirmed_at;
+
+  return isConfirmed ? <>{children}</> : null;
 }
 
 function AppRoutes() {
@@ -84,6 +86,14 @@ function AppRoutes() {
       />
       <Route
         path="/buy-credits"
+        element={
+          <ProtectedRoute>
+            <BuyCredits />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/pricing"
         element={
           <ProtectedRoute>
             <BuyCredits />

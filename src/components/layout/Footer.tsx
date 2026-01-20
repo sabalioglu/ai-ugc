@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Video, Twitter, Github, Linkedin } from 'lucide-react';
+import { Twitter, Github, Linkedin } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -7,13 +7,11 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center">
-                <Video className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-                UGC Studio
+            <div className="flex flex-col group mb-4">
+              <span className="text-2xl font-black italic tracking-tighter text-gray-900 dark:text-white leading-none">
+                agentized.io
               </span>
+              <div className="w-[110px] h-[2px] bg-purple-600 -mt-0.5" />
             </div>
             <p className="text-gray-600 dark:text-gray-400 max-w-md">
               Create authentic UGC-style video ads in minutes with AI. Transform your
@@ -122,7 +120,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-          <p>&copy; {new Date().getFullYear()} UGC Studio. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} agentized.io. All rights reserved.</p>
         </div>
       </div>
     </footer>

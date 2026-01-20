@@ -160,7 +160,7 @@ export function Generate() {
       }
 
       // 4. TRIGGER n8n WORKFLOW
-      const N8N_WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL;
+      const N8N_WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.tsagroupllc.com/webhook/ugc-video-gen1';
 
       const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',

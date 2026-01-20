@@ -1,292 +1,364 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Sparkles,
-  Upload,
-  Wand2,
-  Video as VideoIcon,
-  Check,
   Users,
   Palette,
   Zap,
-  Globe,
-  Bot,
   Target,
+  Play,
+  ArrowRight,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Marquee from 'react-fast-marquee';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/hooks/useAuth';
+import portfolioData from '../portfolio.json';
+import '../studio.css';
 
 export function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  const categories = ['All', 'AI Ads', 'Cinematic', 'Social Content'];
+
+  const filteredPortfolio = activeCategory === 'All'
+    ? portfolioData
+    : portfolioData.filter(item => item.category === activeCategory).slice(0, 6);
 
   const features = [
     {
       icon: Palette,
-      title: '9 UGC Styles',
-      description: 'From unboxing to testimonials, choose the perfect style for your product',
+      title: '9 Studio Styles',
+      description: 'From hyper-realistic cinematic to high-impact TikTok hooks.',
     },
     {
       icon: Users,
-      title: '5 Target Audiences',
-      description: 'AI selects the perfect creator persona for your demographic',
+      title: 'Global Actor Library',
+      description: 'Access a diverse fleet of AI agents for any demographic.',
     },
     {
       icon: Zap,
-      title: 'Fast Generation',
-      description: 'Get your professional UGC video in just 2-3 minutes',
-    },
-    {
-      icon: Globe,
-      title: 'Multi-Platform Export',
-      description: 'Optimized for TikTok, Instagram Reels, and YouTube',
-    },
-    {
-      icon: Bot,
-      title: 'AI-Powered Characters',
-      description: 'Realistic virtual creators that look and feel authentic',
+      title: 'Instant Production',
+      description: 'Your vision, rendered in professional quality within minutes.',
     },
     {
       icon: Target,
-      title: 'Professional Quality',
-      description: 'Production-ready videos with no editing required',
+      title: 'Conversion Focused',
+      description: 'Engineered for high CTR and maximum audience engagement.',
     },
   ];
 
-  const pricingPlans = [
-    {
-      name: 'Starter Pack',
-      price: '$49',
-      period: '/one-time',
-      description: 'Perfect for trying out UGC creation',
-      credits: '500 Credits',
-      features: [
-        '~10 Generated Videos',
-        'Standard Processing',
-        'Email Support',
-      ],
-      cta: 'Buy 500 Credits',
-      popular: false,
-    },
-    {
-      name: 'Creator Pack',
-      price: '$99',
-      period: '/one-time',
-      description: 'Best value for regular creators',
-      credits: '1200 Credits',
-      features: [
-        '~24 Generated Videos',
-        'Priority Processing',
-        'HD Downloads',
-        'Priority Support',
-      ],
-      cta: 'Buy 1200 Credits',
-      popular: true,
-    },
-    {
-      name: 'Agency Pack',
-      price: '$199',
-      period: '/one-time',
-      description: 'High volume for professional use',
-      credits: '3000 Credits',
-      features: [
-        '~60 Generated Videos',
-        'Instant Processing',
-        '4K Downloads',
-        'Dedicated Manager',
-      ],
-      cta: 'Buy 3000 Credits',
-      popular: false,
-    },
+  const stats = [
+    { label: 'CTR BOOST', value: '+32.4%' },
+    { label: 'COST REDUCTION', value: '78%' },
+    { label: 'AVG PRODUCTION', value: '8 Min' },
   ];
 
-  const steps = [
-    {
-      icon: Upload,
-      title: 'Upload product image',
-      description: 'Simply drag and drop your product photo',
-    },
-    {
-      icon: Wand2,
-      title: 'AI generates video',
-      description: 'Our AI creates a video with a realistic creator',
-    },
-    {
-      icon: VideoIcon,
-      title: 'Download & share',
-      description: 'Get your video ready for TikTok and Reels',
-    },
+  const recentCreations = [
+    "Skincare Ad #412 Generated",
+    "Finance Promo #109 Rendered",
+    "Gaming Hook #883 Active",
+    "E-comm UGC #552 Completed",
+    "Travel Cinematic #301 Generated",
+    "Food Reel #992 Active",
+    "App Showcase #214 Completed"
   ];
 
   return (
     <Layout>
-      <section className="relative overflow-hidden bg-gradient-to-br from-purple-50 via-blue-50 to-gray-50 dark:from-gray-900 dark:via-purple-950 dark:to-gray-900 py-20 md:py-32">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 text-sm px-4 py-2">
-              <Sparkles className="w-4 h-4 mr-2" />
-              AI-Powered UGC Video Generator
-            </Badge>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Create Authentic{' '}
-              <span className="bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-                UGC Ads
-              </span>{' '}
-              in Minutes with AI
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Upload your product. AI generates professional UGC-style video ads.
-              Perfect for TikTok, Instagram Reels, and YouTube.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" onClick={() => navigate(user ? '/dashboard' : '/auth')} className="text-lg px-8">
-                <Sparkles className="w-5 h-5 mr-2" />
-                {user ? 'Go to Dashboard' : 'Start Free - Get 1 Video'}
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate(user ? '/dashboard' : '/auth')}>
-                {user ? 'My Videos' : 'View Examples'}
-              </Button>
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-32 bg-white">
+        {/* Background Ethereal Elements */}
+        <div className="absolute top-1/4 -left-1/4 w-[800px] h-[800px] bg-studio-neon-lime/5 rounded-full blur-[150px] animate-pulse pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-1/4 w-[800px] h-[800px] bg-studio-purple/5 rounded-full blur-[150px] animate-pulse delay-1000 pointer-events-none" />
+
+        {/* Floating Side Assets (Arcads Style) - Balanced 2 Left, 2 Right */}
+        {/* Left Side */}
+        <div className="absolute left-[4%] top-[15%] hidden xl:block w-44 studio-float studio-rotate-left z-20">
+          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105">
+            <img src={portfolioData[0].thumbnail} className="w-full h-full object-cover" alt="" fetchPriority="high" decoding="async" />
+            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="text-white font-black text-[10px] tracking-widest">+42% ROAS</div>
             </div>
-            <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-              No credit card required
+          </div>
+        </div>
+
+        <div className="absolute left-[10%] bottom-[12%] hidden xl:block w-48 studio-float studio-rotate-right animation-delay-3000 z-10">
+          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105">
+            <img src={portfolioData[3].thumbnail} className="w-full h-full object-cover" alt="" fetchPriority="high" decoding="async" />
+            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="text-white font-black text-[10px] tracking-widest">GLOBAL REACH</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side */}
+        <div className="absolute right-[4%] top-[20%] hidden xl:block w-52 studio-float studio-rotate-right animation-delay-1000 z-20">
+          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105">
+            <img src={portfolioData[2].thumbnail} className="w-full h-full object-cover" alt="" fetchPriority="high" decoding="async" />
+            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="text-white font-black text-[10px] tracking-widest">3.8x CONV</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute right-[10%] bottom-[15%] hidden xl:block w-44 studio-float studio-rotate-left animation-delay-2000 z-10">
+          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105">
+            <img src={portfolioData[1].thumbnail} className="w-full h-full object-cover" alt="" fetchPriority="high" decoding="async" />
+            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="text-white font-black text-[10px] tracking-widest">5.2% CTR</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-30">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-5xl mx-auto text-center"
+          >
+            <h1 className="text-6xl md:text-9xl font-black mb-10 tracking-tighter leading-[0.85] text-studio-text-main">
+              GENERATE ADS<br />
+              <span className="studio-italic-serif text-studio-purple">that convert</span>
+            </h1>
+
+            <p className="text-xl md:text-2xl text-studio-text-muted mb-6 max-w-2xl mx-auto font-medium tracking-tight leading-relaxed">
+              Create high-performing video ads in minutes with AI. <br className="hidden md:block" />
+              No actors, no equipment, no hassle.
             </p>
+
+            <div className="mb-10 flex items-center justify-center gap-2">
+              <div className="h-[1px] w-8 bg-studio-border" />
+              <p className="text-sm md:text-base font-black text-studio-purple/80 tracking-widest uppercase animate-pulse">
+                For less than the price of a cup of coffee
+              </p>
+              <div className="h-[1px] w-8 bg-studio-border" />
+            </div>
+
+            <div className="flex flex-col items-center gap-6 mb-20">
+              <Button
+                size="lg"
+                onClick={() => navigate(user ? '/dashboard' : '/auth')}
+                className="studio-neon-button text-xl px-12 h-18 shadow-2xl group"
+              >
+                {user ? 'ENTER STUDIO' : 'START FOR FREE'}
+                <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <div className="text-[10px] font-black text-studio-text-muted tracking-[0.2em] uppercase opacity-60">
+                No credit card required • Join 2,000+ creators
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto border-t border-studio-border pt-12 items-center relative">
+              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-studio-neon-lime/10 rounded-full blur-[80px] pointer-events-none" />
+              {stats.map((stat, i) => (
+                <div key={i} className="text-center group cursor-default">
+                  <div className="text-4xl md:text-5xl font-black text-studio-text-main mb-1 tracking-tighter italic group-hover:text-studio-purple transition-colors">{stat.value}</div>
+                  <div className="text-[10px] font-black text-studio-text-muted tracking-widest uppercase opacity-70">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Structured Showcase Section */}
+      <section id="portfolio" className="py-32 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
+            <div className="max-w-2xl">
+              <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-tighter text-studio-text-main uppercase">
+                Studio <span className="studio-italic-serif">Showcase</span>
+              </h2>
+              <p className="text-studio-text-muted text-xl font-medium tracking-tight">
+                Our latest synthetic productions optimized for scale.
+              </p>
+            </div>
+
+            <div className="hidden md:flex gap-3 bg-studio-surface p-1.5 rounded-2xl border border-studio-border">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all ${activeCategory === cat
+                    ? 'bg-white text-studio-text-main shadow-md border border-studio-border'
+                    : 'text-studio-text-muted hover:text-studio-text-main'
+                    }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {filteredPortfolio.map((item, idx) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className={`group flex flex-col ${idx % 2 === 0 ? 'lg:-translate-y-8' : ''} transition-all duration-700`}
+              >
+                {/* Arcads Header Look */}
+                <div className="flex items-center justify-between mb-4 px-4 font-black text-[10px] tracking-widest text-studio-text-muted uppercase">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-studio-surface border border-studio-border flex items-center justify-center overflow-hidden">
+                      <img src={item.thumbnail} className="w-full h-full object-cover grayscale" alt="" loading="lazy" decoding="async" />
+                    </div>
+                    <span>{item.title}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded bg-green-50 text-green-600 border border-green-100">ACTIVE</span>
+                    <span className="opacity-50">SPONSORED</span>
+                  </div>
+                </div>
+
+                <div className="studio-card-9-16 rounded-[40px] border border-studio-border bg-studio-surface shadow-xl hover:shadow-2xl transition-all duration-700 overflow-hidden group">
+                  <img
+                    src={item.thumbnail}
+                    alt={item.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                  />
+
+                  {/* Performance Overlay */}
+                  <div className="absolute inset-x-4 bottom-4 z-20">
+                    <div className="bg-white/90 backdrop-blur-xl p-5 rounded-[24px] border border-studio-border flex items-center justify-between shadow-lg transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                      <div>
+                        <div className="text-[10px] font-black text-studio-text-muted tracking-widest uppercase mb-1">Impact</div>
+                        <div className="text-xl font-black text-studio-purple">+{Math.floor(Math.random() * 50) + 20}% Sales</div>
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-studio-text-main text-white flex items-center justify-center hover:bg-studio-purple transition-colors cursor-pointer">
+                        <Play className="w-5 h-5 fill-current ml-0.5" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 px-4 flex justify-between items-center text-[10px] font-black tracking-widest uppercase text-studio-text-muted">
+                  <span>{item.category}</span>
+                  <span className="text-studio-purple">{Math.floor(Math.random() * 900) + 100}K+ VIEWS</span>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white dark:bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Three simple steps to create professional UGC videos
+      {/* Studio Capabilities */}
+      <section className="py-40 bg-white relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-studio-purple/5 rounded-full blur-[120px] -mt-40 pointer-events-none" />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-24 max-w-3xl mx-auto">
+            <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-studio-text-main uppercase">
+              The <span className="studio-italic-serif">Synthesis</span> Engine
+            </h2>
+            <p className="text-studio-text-muted text-xl font-medium tracking-tight">
+              Sophisticated neural modules designed to engineer high-impact visual assets for global brands.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {steps.map((step, index) => (
-              <div key={index} className="relative">
-                <div className="text-center">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center shadow-lg">
-                    <step.icon className="w-10 h-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-semibold mb-3">{step.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-studio-surface border border-studio-border p-10 rounded-[40px] hover:bg-white hover:shadow-2xl hover:translate-y-[-8px] transition-all duration-500 group cursor-default"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-8 border border-studio-border group-hover:border-studio-purple/30 group-hover:bg-studio-purple/5 transition-all shadow-sm">
+                  <feature.icon className="w-7 h-7 text-studio-text-main group-hover:text-studio-purple transition-colors" />
+                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tighter text-studio-text-main uppercase">{feature.title}</h3>
+                <p className="text-studio-text-muted leading-relaxed font-medium text-lg">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Live Production Marquee (Arcads Style Social Proof) */}
+      <div className="bg-studio-text-main py-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-studio-text-main via-transparent to-studio-text-main z-10 pointer-events-none" />
+        <Marquee gradient={false} speed={40}>
+          {recentCreations.map((item, i) => (
+            <div key={i} className="flex items-center gap-4 mx-12">
+              <div className="w-2 h-2 rounded-full bg-studio-neon-lime animate-pulse" />
+              <span className="text-white/40 text-[10px] font-black tracking-widest uppercase">{item}</span>
+            </div>
+          ))}
+        </Marquee>
+      </div>
+
+      {/* CTA Section - Redesigned as Integrated Full-Width Section */}
+      <section className="py-40 bg-gradient-to-b from-white to-studio-surface text-center relative overflow-hidden">
+        {/* Background Ethereal elements */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-studio-purple/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-studio-neon-lime/5 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="max-w-4xl mx-auto"
+          >
+            <h2 className="text-7xl md:text-[10rem] font-black mb-12 tracking-tighter leading-[0.8] text-studio-text-main">
+              READY TO<br />
+              <span className="studio-italic-serif text-studio-purple">scale?</span>
+            </h2>
+
+            <p className="text-xl md:text-3xl mb-16 text-studio-text-muted max-w-2xl mx-auto font-medium leading-relaxed tracking-tight">
+              Join the vanguard of digital creators. Generate your first high-performance AI production in minutes.
+            </p>
+
+            <div className="flex flex-col items-center gap-8">
+              <Button
+                size="lg"
+                onClick={() => navigate('/pricing')}
+                className="studio-neon-button text-3xl px-20 h-24 shadow-[0_20px_60px_rgba(204,255,0,0.3)] hover:scale-105 active:scale-95 transition-all w-full sm:w-auto group"
+              >
+                SEE PRICING
+                <ArrowRight className="w-10 h-10 ml-6 group-hover:translate-x-2 transition-transform" />
+              </Button>
+
+              <div className="flex flex-col items-center gap-4">
+                <div className="text-studio-text-muted/60 text-xs font-black tracking-[0.3em] uppercase">
+                  NO CREDIT CARD REQUIRED • INSTANT ACCESS
+                </div>
+
+                {/* Visual trust signals */}
+                <div className="flex gap-4 opacity-30 grayscale mt-4">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" className="h-4" alt="Visa" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-4" alt="Mastercard" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" className="h-4" alt="PayPal" />
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          </motion.div>
         </div>
-      </section>
 
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Powerful Features</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Everything you need to create authentic UGC videos
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {features.map((feature, index) => (
-              <Card
-                key={index}
-                className="border-2 hover:border-purple-500 hover:shadow-xl transition-all duration-300"
-              >
-                <CardHeader>
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center mb-4">
-                    <feature.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <CardTitle>{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 bg-white dark:bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Choose the package that suits your creative needs.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {pricingPlans.map((plan, index) => (
-              <Card
-                key={index}
-                className={`relative ${plan.popular
-                  ? 'border-2 border-purple-600 shadow-2xl scale-105'
-                  : 'border-2'
-                  }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <Badge variant="default" className="px-4 py-1">
-                      Most Popular
-                    </Badge>
-                  </div>
-                )}
-                <CardHeader>
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-5xl font-bold">{plan.price}</span>
-                    <span className="text-gray-600 dark:text-gray-400">{plan.period}</span>
-                  </div>
-                  <p className="text-sm font-semibold text-purple-600 dark:text-purple-400 mt-2">
-                    {plan.credits}
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-700 dark:text-gray-300">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button
-                    className="w-full"
-                    variant={plan.popular ? 'default' : 'outline'}
-                    size="lg"
-                    onClick={() => navigate(user ? '/dashboard' : '/auth')}
-                  >
-                    {user ? 'Select Plan' : plan.cta}
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-500 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Create Amazing UGC Videos?
-          </h2>
-          <p className="text-xl mb-10 max-w-2xl mx-auto opacity-90">
-            Join thousands of brands creating authentic video content with AI
-          </p>
-          <Button size="lg" variant="secondary" onClick={() => navigate(user ? '/dashboard' : '/auth')} className="text-lg px-8">
-            <Sparkles className="w-5 h-5 mr-2" />
-            {user ? 'Continue Creating' : 'Get Started Free'}
-          </Button>
-        </div>
+        {/* Floating Decorative Assets (Subtle) */}
+        <motion.div
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute left-[10%] bottom-[20%] hidden lg:block w-32 h-32 border border-studio-border rounded-full opacity-20"
+        />
+        <motion.div
+          animate={{ y: [0, 20, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute right-[15%] top-[15%] hidden lg:block w-24 h-24 border border-studio-purple/20 rounded-[40px] rotate-45 opacity-20"
+        />
       </section>
     </Layout>
   );

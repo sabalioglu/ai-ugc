@@ -1,5 +1,5 @@
 import { Play, Download, Trash2, Clock } from 'lucide-react';
-import { Card, CardContent, CardFooter } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { formatRelativeTime } from '@/lib/utils';
@@ -15,10 +15,10 @@ export function VideoCard({ job, onDelete }: VideoCardProps) {
   const navigate = useNavigate();
 
   const statusConfig = {
-    completed: { variant: 'success' as const, label: 'Completed' },
-    processing: { variant: 'warning' as const, label: 'Processing' },
-    pending: { variant: 'secondary' as const, label: 'Pending' },
-    failed: { variant: 'destructive' as const, label: 'Failed' },
+    completed: { variant: 'success' as const, label: 'COMPLETED', color: 'text-green-600 border-green-200 bg-green-50' },
+    processing: { variant: 'warning' as const, label: 'SYNTHESIZING', color: 'text-studio-purple border-studio-purple/20 bg-studio-purple/5' },
+    pending: { variant: 'secondary' as const, label: 'QUEUED', color: 'text-studio-text-muted border-studio-border bg-studio-surface' },
+    failed: { variant: 'destructive' as const, label: 'FAILED', color: 'text-red-600 border-red-200 bg-red-50' },
   };
 
   const status = statusConfig[job.status];
@@ -34,100 +34,114 @@ export function VideoCard({ job, onDelete }: VideoCardProps) {
     }
   };
 
-  // Determine aspect ratio class based on job.aspect_ratio
   const getAspectRatioClass = () => {
     if (job.aspect_ratio === '9:16') return 'aspect-[9/16]';
     if (job.aspect_ratio === '1:1') return 'aspect-square';
-    return 'aspect-video'; // 16:9 default
+    return 'aspect-video';
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+    <Card className="studio-glass-card border-studio-border bg-white overflow-hidden group hover:border-studio-purple/30 transition-all duration-500 shadow-sm hover:shadow-xl">
       <div
-        className={`relative ${getAspectRatioClass()} bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 cursor-pointer`}
+        className={`relative ${getAspectRatioClass()} bg-studio-surface cursor-pointer overflow-hidden`}
         onClick={() => navigate(`/progress/${job.job_id}`)}
       >
         {job.video_url ? (
           <video
             src={job.video_url}
-            controls
-            className="w-full h-full object-contain bg-black"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Your browser does not support the video tag.
-          </video>
+            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+            onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
+            onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}
+            muted
+            loop
+          />
         ) : job.thumbnail_url ? (
           <>
             <img
               src={job.thumbnail_url}
               alt={job.product_name}
-              className="w-full h-full object-contain bg-black"
+              className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
+              loading="lazy"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <Play className="w-12 h-12 text-white" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+              <div className="w-16 h-16 rounded-full bg-studio-neon-lime flex items-center justify-center shadow-xl">
+                <Play className="w-8 h-8 text-black fill-current ml-1" />
+              </div>
             </div>
           </>
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Play className="w-16 h-16 text-purple-600 opacity-50" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-studio-surface">
+            <Clock className="w-12 h-12 text-studio-text-muted mb-4 animate-pulse" />
+            <span className="text-xs font-black tracking-widest text-studio-text-muted uppercase">Synthesizing...</span>
           </div>
         )}
+
         <Badge
-          variant={status.variant}
-          className="absolute top-2 right-2"
+          variant="outline"
+          className={`absolute top-4 right-4 text-[10px] font-black tracking-widest px-3 py-1 rounded-sm border shadow-sm ${status.color}`}
         >
           {status.label}
         </Badge>
+
         {job.duration > 0 && (
-          <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            {job.duration}s
+          <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md text-studio-text-main text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-studio-border shadow-sm">
+            <Clock className="w-3.5 h-3.5 text-studio-purple" />
+            {job.duration}S
           </div>
         )}
       </div>
-      <CardContent className="p-4">
-        <h3 className="font-semibold text-lg mb-1 truncate">{job.product_name}</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-          {job.ugc_type} • {job.target_audience}
-        </p>
-        <p className="text-xs text-gray-500 dark:text-gray-500">
-          {formatRelativeTime(job.created_at)}
-        </p>
-        {job.character_model && (
-          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-            Character: {job.character_model.age}yo {job.character_model.gender}
+
+      <CardContent className="p-6 bg-white">
+        <div className="flex items-start justify-between gap-4 mb-5">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-black text-xl text-studio-text-main mb-1 truncate tracking-tighter uppercase leading-tight">
+              {job.product_name}
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              <span className="text-[10px] font-black text-studio-text-muted tracking-widest uppercase bg-studio-surface px-2 py-0.5 rounded">
+                {job.ugc_type}
+              </span>
+              <span className="text-[10px] font-black text-studio-purple tracking-widest uppercase bg-studio-purple/5 px-2 py-0.5 rounded">
+                @{job.target_audience}
+              </span>
+            </div>
+          </div>
+          <p className="text-[10px] font-bold text-studio-text-muted tracking-widest uppercase whitespace-nowrap bg-studio-surface px-2 py-1 rounded">
+            {formatRelativeTime(job.created_at)}
           </p>
-        )}
+        </div>
+
+        <div className="flex gap-3">
+          <Button
+            size="sm"
+            className="flex-1 bg-studio-surface hover:bg-studio-surface-alt text-studio-text-main border-studio-border text-[10px] font-black tracking-widest uppercase h-11 rounded-xl shadow-sm transition-all active:scale-95"
+            onClick={() => navigate(`/progress/${job.job_id}`)}
+          >
+            Inspect Asset
+          </Button>
+          {job.status === 'completed' && job.video_url && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-studio-border text-studio-text-main hover:bg-studio-neon-lime hover:border-studio-neon-lime transition-all h-11 w-11 p-0 rounded-xl shadow-sm active:scale-90"
+              onClick={handleDownload}
+            >
+              <Download className="w-5 h-5" />
+            </Button>
+          )}
+          {onDelete && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => onDelete(job.id)}
+              className="text-studio-text-muted hover:text-red-600 hover:bg-red-50 h-11 w-11 p-0 transition-colors rounded-xl active:scale-90"
+            >
+              <Trash2 className="w-5 h-5" />
+            </Button>
+          )}
+        </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0 flex gap-2">
-        <Button
-          size="sm"
-          variant="outline"
-          className="flex-1"
-          onClick={() => navigate(`/progress/${job.job_id}`)}
-        >
-          View
-        </Button>
-        {job.status === 'completed' && job.video_url && (
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleDownload}
-          >
-            <Download className="w-4 h-4" />
-          </Button>
-        )}
-        {onDelete && (
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onDelete(job.id)}
-            className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        )}
-      </CardFooter>
     </Card>
   );
 }
