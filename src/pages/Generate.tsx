@@ -160,7 +160,15 @@ export function Generate() {
       }
 
       // 4. TRIGGER n8n WORKFLOW
-      const N8N_WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.tsagroupllc.com/webhook/ugc-video-gen1';
+      // ==================================================================================
+      // ⚠️ DO NOT MODIFY THIS WEBHOOK URL ⚠️
+      // INTERNAL AGENT NOTICE: This is the PRODUCTION webhook trigger URL.
+      // It must stay as: https://n8n.tsagroupllc.com/webhook/ugc-video-gen1
+      // Do NOT use environment variables here for now as they are prone to regression.
+      // ==================================================================================
+      const N8N_WEBHOOK_URL = 'https://n8n.tsagroupllc.com/webhook/ugc-video-gen1';
+      console.log('--- PRODUCTION TRIGGER: Initializing Request ---');
+      console.log('Target URL:', N8N_WEBHOOK_URL);
 
       const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
