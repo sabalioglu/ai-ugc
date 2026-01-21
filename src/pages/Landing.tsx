@@ -167,28 +167,28 @@ export function Landing() {
       </section>
 
       {/* Before & After Comparison Section */}
-      <section className="py-24 bg-studio-surface border-y border-studio-border relative overflow-hidden">
+      <section className="py-16 bg-studio-surface border-y border-studio-border relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-studio-purple/5 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-studio-text-main uppercase">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-5xl font-black mb-3 tracking-tighter text-studio-text-main uppercase">
               The <span className="studio-italic-serif">Transformation</span>
             </h2>
-            <p className="text-studio-text-muted text-lg md:text-xl font-medium tracking-tight">
+            <p className="text-studio-text-muted text-lg font-medium tracking-tight">
               Turn a single product photo into a high-converting video ad in seconds.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
             {/* Before: Static Photo */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="flex flex-col gap-6"
+              className="flex flex-col gap-4"
             >
-              <div className="relative studio-card-9-16 rounded-[40px] overflow-hidden border border-studio-border bg-white shadow-xl">
+              <div className="relative studio-card-9-16 rounded-3xl overflow-hidden border border-studio-border bg-white shadow-lg">
                 <img
                   src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop"
                   className="absolute inset-0 w-full h-full object-cover"
@@ -205,9 +205,9 @@ export function Landing() {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="flex flex-col gap-6"
+              className="flex flex-col gap-4"
             >
-              <div className="relative studio-card-9-16 rounded-[40px] overflow-hidden border border-studio-purple/30 bg-studio-text-main shadow-2xl">
+              <div className="relative studio-card-9-16 rounded-3xl overflow-hidden border border-studio-purple/30 bg-studio-text-main shadow-xl">
                 <video
                   autoPlay
                   muted
@@ -229,7 +229,7 @@ export function Landing() {
       </section>
 
       {/* Structured Showcase Section */}
-      <section id="portfolio" className="py-32 bg-white">
+      <section id="portfolio" className="py-20 bg-white">
         <div className="container mx-auto px-6 md:px-4">
           <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
             <div className="max-w-2xl">
@@ -257,7 +257,7 @@ export function Landing() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredPortfolio.map((item, idx) => (
               <motion.div
                 key={item.id}
@@ -265,10 +265,10 @@ export function Landing() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className={`group flex flex-col ${idx % 2 === 0 ? 'lg:-translate-y-8' : ''} transition-all duration-700`}
+                className="group flex flex-col transition-all duration-700"
               >
                 {/* Arcads Header Look */}
-                <div className="flex items-center justify-between mb-4 px-4 font-black text-[10px] tracking-widest text-studio-text-muted uppercase">
+                <div className="flex items-center justify-between mb-3 px-3 font-black text-[9px] tracking-widest text-studio-text-muted uppercase">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-studio-surface border border-studio-border flex items-center justify-center overflow-hidden">
                       <img src={item.thumbnail} className="w-full h-full object-cover grayscale" alt="" loading="lazy" decoding="async" />
@@ -281,7 +281,7 @@ export function Landing() {
                   </div>
                 </div>
 
-                <div className="studio-card-9-16 rounded-[40px] border border-studio-border bg-studio-surface shadow-xl hover:shadow-2xl transition-all duration-700 overflow-hidden group relative">
+                <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-md hover:shadow-xl transition-all duration-700 overflow-hidden group relative">
                   {item.videoUrl ? (
                     <video
                       autoPlay
