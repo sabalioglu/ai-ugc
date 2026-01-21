@@ -8,6 +8,11 @@ import {
   Target,
   Play,
   ArrowRight,
+  Upload,
+  FileText,
+  MousePointer,
+  Clock,
+  CheckCircle,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Marquee from 'react-fast-marquee';
@@ -209,11 +214,75 @@ export function Landing() {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section className="py-16 bg-white border-b border-studio-border relative overflow-hidden">
+        <div className="container mx-auto px-6 md:px-4 relative z-10">
+          <div className="text-center mb-12 max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tighter text-studio-text-main uppercase">
+              How It <span className="studio-italic-serif">Works</span>
+            </h2>
+            <p className="text-studio-text-muted text-lg font-medium tracking-tight leading-relaxed mb-12">
+              All you need to do is upload your product photo and AI handles the rest.
+              AI will create characters according to your target audience, and here you go—your ad is ready.
+            </p>
+          </div>
+
+          {/* Simple Steps - 2 rows of 3 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[
+              { step: '01', icon: Upload, title: 'Upload Product Image', desc: 'Drop your photo, AI will analyze and create best angle for UGC' },
+              { step: '02', icon: FileText, title: 'Describe Your Product', desc: 'Tell us what makes it special' },
+              { step: '03', icon: MousePointer, title: 'Choose Your Style', desc: 'Pick from 9 studio-quality styles' },
+              { step: '04', icon: Users, title: 'Select Target Audience', desc: 'Who are you speaking to?' },
+              { step: '05', icon: Clock, title: 'Pick Duration & Format', desc: 'From TikTok teaser to full story' },
+              { step: '06', icon: CheckCircle, title: 'Generate & Download', desc: 'Your AI ad ready in minutes' },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                className="flex gap-4 items-start p-5 bg-studio-surface/50 rounded-xl border border-studio-border/50 hover:border-studio-purple/20 transition-colors"
+              >
+                <div className="flex-shrink-0 w-10 h-10 bg-studio-purple text-white rounded-lg flex items-center justify-center font-black text-sm">
+                  {item.step}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base font-black text-studio-text-main mb-1 uppercase tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-studio-text-muted font-medium">
+                    {item.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Before & After Comparison Section */}
-      <section className="py-16 bg-studio-surface border-y border-studio-border relative overflow-hidden">
+      <section className="py-20 bg-studio-surface border-y border-studio-border relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-studio-purple/5 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
+          {/* Section Title with Down Arrow */}
+          <div className="text-center mb-12 relative">
+            <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter text-studio-text-main uppercase">
+              See The <span className="studio-italic-serif">Result</span>
+            </h2>
+            <p className="text-studio-text-muted text-lg font-medium tracking-tight max-w-2xl mx-auto mb-8">
+              Transform static product photos into engaging AI-powered video ads
+            </p>
+            {/* Down Arrow */}
+            <div className="flex justify-center">
+              <svg width="40" height="60" viewBox="0 0 40 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-bounce">
+                <path d="M20 5 L20 50" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round" strokeDasharray="2 4"/>
+                <path d="M10 40 L20 50 L30 40" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              </svg>
+            </div>
+          </div>
           <div className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20 mt-16 px-6">
             {/* Before: Static Photo - Left Side */}
             <motion.div
@@ -299,7 +368,6 @@ export function Landing() {
           </div>
         </div>
       </section>
-
 
       {/* Featured Ads Section - With Sound */}
       <section id="portfolio" className="py-20 bg-gradient-to-b from-white to-studio-surface relative overflow-hidden">
