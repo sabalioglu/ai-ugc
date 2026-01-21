@@ -92,8 +92,7 @@ export function Landing() {
                 e.currentTarget.currentTime = 0;
               }}
             >
-              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.MOV" type="video/quicktime" />
-              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.MOV" type="video/mp4" />
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD_muted.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">+42% ROAS</div>
@@ -125,8 +124,7 @@ export function Landing() {
                 e.currentTarget.currentTime = 0;
               }}
             >
-              <source src="https://res.cloudinary.com/dlnh3x5ki/video/upload/v1768991010/ProteinAd_dmodrr.mov" type="video/quicktime" />
-              <source src="https://res.cloudinary.com/dlnh3x5ki/video/upload/v1768991010/ProteinAd_dmodrr.mov" type="video/mp4" />
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd_muted.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">3.8x CONV</div>
@@ -149,8 +147,7 @@ export function Landing() {
                 e.currentTarget.currentTime = 0;
               }}
             >
-              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/quicktime" />
-              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/mp4" />
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd_muted.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">5.2% CTR</div>
@@ -215,35 +212,43 @@ export function Landing() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-studio-purple/5 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="relative max-w-4xl mx-auto flex items-center justify-center gap-8 md:gap-12">
+          <div className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20 mt-16 px-6">
             {/* Before: Static Photo - Left Side */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative w-32 md:w-40"
+              className="relative w-48 md:w-64 z-10"
             >
-              <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-studio-border bg-white shadow-lg">
+              <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-studio-border bg-white shadow-xl transform hover:scale-105 transition-transform duration-500">
                 <img
                   src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/product-images/a4c95f56-4af2-4c74-b681-c1bf51782291/job_1768411532862_2jia18.jpg"
                   className="absolute inset-0 w-full h-full object-cover"
                   alt="Static Product"
                 />
-                <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md px-2 py-1 rounded-full border border-white/10">
-                  <span className="text-white text-[8px] font-black tracking-widest uppercase">Before: Photo</span>
+                <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-lg">
+                  <span className="text-white text-[9px] font-black tracking-widest uppercase">Before: Photo</span>
                 </div>
+              </div>
+              
+              {/* Premium Curvy Red Arrow (Mockup Style) */}
+              <div className="absolute -right-16 md:-right-24 top-1/2 -translate-y-1/2 hidden md:block z-20 pointer-events-none">
+                <svg width="100" height="60" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="filter drop-shadow-[0_4px_12px_rgba(255,100,100,0.4)]">
+                  <path d="M10 30C30 10 70 10 90 35" stroke="#FF4D4D" strokeWidth="5" strokeLinecap="round" strokeDasharray="1 12" className="animate-[dash_2s_linear_infinite]" />
+                  <path d="M82 38L90 35L85 27" stroke="#FF4D4D" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </div>
             </motion.div>
 
             {/* After: AI Video - Right Side (Main) */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative w-full max-w-[360px] md:max-w-[420px]"
+              className="relative w-full max-w-[360px] md:max-w-[420px] z-0"
             >
               <div
-                className="relative aspect-[9/16] rounded-[32px] overflow-hidden border-4 border-studio-purple/20 bg-studio-text-main shadow-[0_32px_64px_-16px_rgba(111,0,255,0.2)] cursor-pointer group"
+                className="relative aspect-[9/16] rounded-[40px] overflow-hidden border-8 border-white bg-studio-text-main shadow-[0_32px_80px_-16px_rgba(0,0,0,0.15)] cursor-pointer group"
                 onClick={() => setIsGoliMuted(!isGoliMuted)}
               >
                 <video
@@ -251,10 +256,9 @@ export function Landing() {
                   muted={isGoliMuted}
                   loop
                   playsInline
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 >
-                  <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/quicktime" />
-                  <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/mp4" />
+                  <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd_muted.mp4" type="video/mp4" />
                 </video>
 
                 {/* After AI Generated Label - Top Center */}
@@ -268,28 +272,21 @@ export function Landing() {
                 {/* Center Tap to Unmute Button */}
                 {isGoliMuted && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
-                    <div className="bg-black/60 backdrop-blur-md px-8 py-3 rounded-full border border-white/20">
-                      <span className="text-white text-xs font-black tracking-widest uppercase">Tap to Unmute</span>
+                    <div className="bg-white/95 backdrop-blur-2xl p-6 rounded-full shadow-2xl border border-white/40 transform group-hover:scale-110 transition-transform duration-500">
+                      <Play className="w-8 h-8 text-studio-purple fill-current ml-1" />
                     </div>
-                  </div>
-                )}
-
-                {/* Bottom Right - Tap for Sound Button */}
-                {isGoliMuted && (
-                  <div className="absolute bottom-6 right-6 z-20">
-                    <div className="bg-black/80 backdrop-blur-xl px-5 py-2.5 rounded-full border border-white/10 flex items-center gap-2">
-                      <Play className="w-4 h-4 text-white fill-current" />
-                      <span className="text-white text-[9px] font-black tracking-widest uppercase">Tap for Sound</span>
+                    <div className="mt-8 bg-black/60 backdrop-blur-md px-6 py-2 rounded-full border border-white/10 text-white text-[10px] font-black tracking-[0.3em] uppercase">
+                      Tap for Sound
                     </div>
                   </div>
                 )}
 
                 {/* Status indicator when unmuted */}
                 {!isGoliMuted && (
-                  <div className="absolute bottom-6 right-6 flex items-center gap-3 bg-black/40 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 z-20 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                    <div className="flex gap-0.5">
+                  <div className="absolute bottom-8 right-8 flex items-center gap-3 bg-black/40 backdrop-blur-xl px-5 py-2.5 rounded-full border border-white/10 z-20 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div className="flex gap-1.5">
                       {[1, 2, 3].map((i) => (
-                        <div key={i} className="w-0.5 h-3 bg-white/80 rounded-full animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
+                        <div key={i} className="w-1 h-4 bg-studio-neon-lime rounded-full animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
                       ))}
                     </div>
                     <span className="text-white text-[9px] font-black tracking-widest uppercase">HD Audio On</span>
@@ -379,6 +376,84 @@ export function Landing() {
                 <div className="mt-4 px-4 flex justify-between items-center text-[10px] font-black tracking-widest uppercase text-studio-text-muted">
                   <span>{item.category}</span>
                   <span className="text-studio-purple">{Math.floor(Math.random() * 900) + 100}K+ VIEWS</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Ads Section - With Sound */}
+      <section className="py-20 bg-gradient-to-b from-white to-studio-surface relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[800px] bg-studio-neon-lime/5 rounded-full blur-[150px] pointer-events-none" />
+
+        <div className="container mx-auto px-6 md:px-4 relative z-10">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-tighter text-studio-text-main uppercase">
+              Featured <span className="studio-italic-serif">Productions</span>
+            </h2>
+            <p className="text-studio-text-muted text-xl font-medium tracking-tight">
+              Real AI-generated ads with sound. Click to unmute and experience the full production quality.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              {
+                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.mp4',
+                title: 'Beard Care Premium',
+                category: 'Beauty & Grooming',
+                metric: '+42% ROAS'
+              },
+              {
+                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd.mp4',
+                title: 'Protein Supplement',
+                category: 'Health & Fitness',
+                metric: '3.8x CONV'
+              },
+              {
+                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.mp4',
+                title: 'Goli Nutrition',
+                category: 'Wellness',
+                metric: '5.2% CTR'
+              }
+            ].map((ad, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: idx * 0.15 }}
+                className="group"
+              >
+                <div className="bg-white border border-studio-border rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px]">
+                  <div className="relative aspect-[9/16] bg-studio-surface overflow-hidden">
+                    <video
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      poster={`${ad.url}#t=0.1`}
+                    >
+                      <source src={ad.url} type="video/mp4" />
+                    </video>
+
+                    {/* Metric Badge */}
+                    <div className="absolute top-4 right-4 bg-studio-neon-lime px-4 py-2 rounded-full shadow-lg z-10">
+                      <span className="text-black text-[10px] font-black tracking-widest uppercase">
+                        {ad.metric}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-6">
+                    <h3 className="text-xl font-black tracking-tighter text-studio-text-main mb-2 uppercase">
+                      {ad.title}
+                    </h3>
+                    <p className="text-[10px] font-black tracking-widest text-studio-text-muted uppercase">
+                      {ad.category}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             ))}
