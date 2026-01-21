@@ -20,14 +20,7 @@ import '../studio.css';
 export function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [activeCategory, setActiveCategory] = useState('All');
-
-  const categories = ['All', 'AI Ads', 'Cinematic', 'Social Content'];
   const [isGoliMuted, setIsGoliMuted] = useState(true);
-
-  const filteredPortfolio = activeCategory === 'All'
-    ? portfolioData.slice(0, 5)
-    : portfolioData.filter(item => item.category === activeCategory).slice(0, 5);
 
   const features = [
     {
@@ -317,21 +310,18 @@ export function Landing() {
             {[
               {
                 url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.mp4',
-                poster: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/product-images/a4c95f56-4af2-4c74-b681-c1bf51782291/job_1768411532862_2jia18.jpg',
                 title: 'Beard Care Premium',
                 category: 'Beauty & Grooming',
                 metric: '+42% ROAS'
               },
               {
                 url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd.mp4',
-                poster: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/product-images/a4c95f56-4af2-4c74-b681-c1bf51782291/job_1768411532862_2jia18.jpg',
                 title: 'Protein Supplement',
                 category: 'Health & Fitness',
                 metric: '3.8x CONV'
               },
               {
                 url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.mp4',
-                poster: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/product-images/a4c95f56-4af2-4c74-b681-c1bf51782291/job_1768411532862_2jia18.jpg',
                 title: 'Goli Nutrition',
                 category: 'Wellness',
                 metric: '5.2% CTR'
@@ -350,8 +340,7 @@ export function Landing() {
                     <video
                       controls
                       playsInline
-                      preload="none"
-                      poster={ad.poster}
+                      preload="metadata"
                       className="absolute inset-0 w-full h-full object-cover bg-studio-surface"
                     >
                       <source src={ad.url} type="video/mp4" />
