@@ -298,93 +298,9 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Structured Showcase Section */}
-      <section id="portfolio" className="py-20 bg-white">
-        <div className="container mx-auto px-6 md:px-4">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
-            <div className="max-w-2xl">
-              <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-tighter text-studio-text-main uppercase">
-                Studio <span className="studio-italic-serif">Showcase</span>
-              </h2>
-              <p className="text-studio-text-muted text-xl font-medium tracking-tight">
-                Our latest synthetic productions optimized for scale.
-              </p>
-            </div>
-
-            <div className="hidden md:flex gap-3 bg-studio-surface p-1.5 rounded-2xl border border-studio-border">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all ${activeCategory === cat
-                    ? 'bg-white text-studio-text-main shadow-md border border-studio-border'
-                    : 'text-studio-text-muted hover:text-studio-text-main'
-                    }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {filteredPortfolio.map((item, idx) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="group flex flex-col transition-all duration-700"
-              >
-                {/* Arcads Header Look */}
-                <div className="flex items-center justify-between mb-3 px-3 font-black text-[9px] tracking-widest text-studio-text-muted uppercase">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-studio-surface border border-studio-border flex items-center justify-center overflow-hidden">
-                      <img src={item.thumbnail} className="w-full h-full object-cover grayscale" alt="" loading="lazy" decoding="async" />
-                    </div>
-                    <span>{item.title}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-green-50 text-green-600 border border-green-100">ACTIVE</span>
-                    <span className="opacity-50">SPONSORED</span>
-                  </div>
-                </div>
-
-                <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-md hover:shadow-xl transition-all duration-700 overflow-hidden group relative">
-                  {item.videoUrl ? (
-                    <video
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    >
-                      <source src={item.videoUrl} type="video/mp4" />
-                    </video>
-                  ) : (
-                    <img
-                      src={item.thumbnail}
-                      alt={item.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    />
-                  )}
-                </div>
-
-                <div className="mt-4 px-4 flex justify-between items-center text-[10px] font-black tracking-widest uppercase text-studio-text-muted">
-                  <span>{item.category}</span>
-                  <span className="text-studio-purple">{Math.floor(Math.random() * 900) + 100}K+ VIEWS</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Featured Ads Section - With Sound */}
-      <section className="py-20 bg-gradient-to-b from-white to-studio-surface relative overflow-hidden">
+      <section id="portfolio" className="py-20 bg-gradient-to-b from-white to-studio-surface relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[800px] bg-studio-neon-lime/5 rounded-full blur-[150px] pointer-events-none" />
 
         <div className="container mx-auto px-6 md:px-4 relative z-10">
@@ -393,7 +309,7 @@ export function Landing() {
               Featured <span className="studio-italic-serif">Productions</span>
             </h2>
             <p className="text-studio-text-muted text-xl font-medium tracking-tight">
-              Real AI-generated ads with sound. Click to unmute and experience the full production quality.
+              Real AI-generated ads with sound. Click play to experience the full production quality.
             </p>
           </div>
 
@@ -401,18 +317,21 @@ export function Landing() {
             {[
               {
                 url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.mp4',
+                poster: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/product-images/a4c95f56-4af2-4c74-b681-c1bf51782291/job_1768411532862_2jia18.jpg',
                 title: 'Beard Care Premium',
                 category: 'Beauty & Grooming',
                 metric: '+42% ROAS'
               },
               {
                 url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd.mp4',
+                poster: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/product-images/a4c95f56-4af2-4c74-b681-c1bf51782291/job_1768411532862_2jia18.jpg',
                 title: 'Protein Supplement',
                 category: 'Health & Fitness',
                 metric: '3.8x CONV'
               },
               {
                 url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.mp4',
+                poster: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/product-images/a4c95f56-4af2-4c74-b681-c1bf51782291/job_1768411532862_2jia18.jpg',
                 title: 'Goli Nutrition',
                 category: 'Wellness',
                 metric: '5.2% CTR'
@@ -431,9 +350,9 @@ export function Landing() {
                     <video
                       controls
                       playsInline
-                      preload="metadata"
-                      className="absolute inset-0 w-full h-full object-cover"
-                      poster={`${ad.url}#t=0.1`}
+                      preload="none"
+                      poster={ad.poster}
+                      className="absolute inset-0 w-full h-full object-cover bg-studio-surface"
                     >
                       <source src={ad.url} type="video/mp4" />
                     </video>
@@ -443,6 +362,13 @@ export function Landing() {
                       <span className="text-black text-[10px] font-black tracking-widest uppercase">
                         {ad.metric}
                       </span>
+                    </div>
+
+                    {/* Play Overlay Hint */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <div className="bg-white/95 backdrop-blur-xl p-8 rounded-full shadow-2xl border border-white/40">
+                        <Play className="w-12 h-12 text-studio-purple fill-current ml-1" />
+                      </div>
                     </div>
                   </div>
 
