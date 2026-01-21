@@ -23,10 +23,11 @@ export function Landing() {
   const [activeCategory, setActiveCategory] = useState('All');
 
   const categories = ['All', 'AI Ads', 'Cinematic', 'Social Content'];
+  const [isGoliMuted, setIsGoliMuted] = useState(true);
 
   const filteredPortfolio = activeCategory === 'All'
-    ? portfolioData
-    : portfolioData.filter(item => item.category === activeCategory).slice(0, 6);
+    ? portfolioData.slice(0, 5)
+    : portfolioData.filter(item => item.category === activeCategory).slice(0, 5);
 
   const features = [
     {
@@ -207,9 +208,13 @@ export function Landing() {
               viewport={{ once: true }}
               className="flex flex-col gap-4"
             >
-              <div className="relative studio-card-9-16 rounded-3xl overflow-hidden border border-studio-purple/30 bg-studio-text-main shadow-xl">
+              <div
+                className="relative studio-card-9-16 rounded-3xl overflow-hidden border border-studio-purple/30 bg-studio-text-main shadow-xl cursor-pointer group"
+                onClick={() => setIsGoliMuted(!isGoliMuted)}
+              >
                 <video
                   autoPlay
+                  muted={isGoliMuted}
                   loop
                   playsInline
                   className="absolute inset-0 w-full h-full object-cover"
@@ -217,11 +222,22 @@ export function Landing() {
                   <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/quicktime" />
                   <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/mp4" />
                 </video>
-                <div className="absolute top-8 left-8 bg-studio-purple px-6 py-2 rounded-full shadow-lg shadow-studio-purple/40">
+                <div className="absolute top-8 left-8 bg-studio-purple px-6 py-2 rounded-full shadow-lg shadow-studio-purple/40 z-20">
                   <span className="text-white text-xs font-black tracking-widest uppercase flex items-center gap-2">
                     <Sparkles className="w-3 h-3" /> After: AI Generated Ad
                   </span>
                 </div>
+                <div className="absolute bottom-8 right-8 bg-black/60 backdrop-blur-md p-3 rounded-full border border-white/10 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Play className={`w-4 h-4 text-white ${isGoliMuted ? 'opacity-50' : 'fill-current'}`} />
+                  <span className="sr-only">{isGoliMuted ? 'Unmute' : 'Mute'}</span>
+                </div>
+                {isGoliMuted && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+                    <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-white text-[10px] font-black tracking-widest uppercase">
+                      Tap to Unmute
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
@@ -301,20 +317,6 @@ export function Landing() {
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     />
                   )}
-
-
-                  {/* Performance Overlay */}
-                  <div className="absolute inset-x-4 bottom-4 z-20">
-                    <div className="bg-white/90 backdrop-blur-xl p-5 rounded-[24px] border border-studio-border flex items-center justify-between shadow-lg transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                      <div>
-                        <div className="text-[10px] font-black text-studio-text-muted tracking-widest uppercase mb-1">Impact</div>
-                        <div className="text-xl font-black text-studio-purple">+{Math.floor(Math.random() * 50) + 20}% Sales</div>
-                      </div>
-                      <div className="w-10 h-10 rounded-full bg-studio-text-main text-white flex items-center justify-center hover:bg-studio-purple transition-colors cursor-pointer">
-                        <Play className="w-5 h-5 fill-current ml-0.5" />
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="mt-4 px-4 flex justify-between items-center text-[10px] font-black tracking-widest uppercase text-studio-text-muted">
@@ -436,6 +438,6 @@ export function Landing() {
           className="absolute right-[15%] top-[15%] hidden lg:block w-24 h-24 border border-studio-purple/20 rounded-[40px] rotate-45 opacity-20"
         />
       </section>
-    </Layout>
+    </Layout >
   );
 }
