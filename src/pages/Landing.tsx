@@ -77,10 +77,24 @@ export function Landing() {
         <div className="absolute bottom-1/4 -right-1/4 w-[800px] h-[800px] bg-studio-purple/5 rounded-full blur-[150px] animate-pulse delay-1000 pointer-events-none" />
 
         {/* Floating Side Assets (Arcads Style) - Balanced 2 Left, 2 Right */}
-        {/* Left Side */}
+        {/* Left Side - Video 1: BeardAD */}
         <div className="absolute left-[4%] top-[15%] hidden xl:block w-44 studio-float studio-rotate-left z-20">
-          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105">
-            <img src={portfolioData[0].thumbnail} className="w-full h-full object-cover" alt="" fetchPriority="high" decoding="async" />
+          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105 group">
+            <video
+              muted
+              loop
+              playsInline
+              preload="none"
+              className="w-full h-full object-cover"
+              onMouseEnter={(e) => e.currentTarget.play()}
+              onMouseLeave={(e) => {
+                e.currentTarget.pause();
+                e.currentTarget.currentTime = 0;
+              }}
+            >
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.MOV" type="video/quicktime" />
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.MOV" type="video/mp4" />
+            </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">+42% ROAS</div>
             </div>
@@ -96,19 +110,48 @@ export function Landing() {
           </div>
         </div>
 
-        {/* Right Side */}
+        {/* Right Side - Video 2: ProteinAd */}
         <div className="absolute right-[4%] top-[20%] hidden xl:block w-52 studio-float studio-rotate-right animation-delay-1000 z-20">
-          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105">
-            <img src={portfolioData[2].thumbnail} className="w-full h-full object-cover" alt="" fetchPriority="high" decoding="async" />
+          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105 group">
+            <video
+              muted
+              loop
+              playsInline
+              preload="none"
+              className="w-full h-full object-cover"
+              onMouseEnter={(e) => e.currentTarget.play()}
+              onMouseLeave={(e) => {
+                e.currentTarget.pause();
+                e.currentTarget.currentTime = 0;
+              }}
+            >
+              <source src="https://res.cloudinary.com/dlnh3x5ki/video/upload/v1768991010/ProteinAd_dmodrr.mov" type="video/quicktime" />
+              <source src="https://res.cloudinary.com/dlnh3x5ki/video/upload/v1768991010/ProteinAd_dmodrr.mov" type="video/mp4" />
+            </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">3.8x CONV</div>
             </div>
           </div>
         </div>
 
+        {/* Right Side Bottom - Video 3: GoliAd */}
         <div className="absolute right-[10%] bottom-[15%] hidden xl:block w-44 studio-float studio-rotate-left animation-delay-2000 z-10">
-          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105">
-            <img src={portfolioData[1].thumbnail} className="w-full h-full object-cover" alt="" fetchPriority="high" decoding="async" />
+          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105 group">
+            <video
+              muted
+              loop
+              playsInline
+              preload="none"
+              className="w-full h-full object-cover"
+              onMouseEnter={(e) => e.currentTarget.play()}
+              onMouseLeave={(e) => {
+                e.currentTarget.pause();
+                e.currentTarget.currentTime = 0;
+              }}
+            >
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/quicktime" />
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/mp4" />
+            </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">5.2% CTR</div>
             </div>
