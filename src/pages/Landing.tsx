@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  Sparkles,
   Users,
   Palette,
   Zap,
@@ -165,6 +166,68 @@ export function Landing() {
         </div>
       </section>
 
+      {/* Before & After Comparison Section */}
+      <section className="py-24 bg-studio-surface border-y border-studio-border relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-studio-purple/5 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-studio-text-main uppercase">
+              The <span className="studio-italic-serif">Transformation</span>
+            </h2>
+            <p className="text-studio-text-muted text-lg md:text-xl font-medium tracking-tight">
+              Turn a single product photo into a high-converting video ad in seconds.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* Before: Static Photo */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex flex-col gap-6"
+            >
+              <div className="relative studio-card-9-16 rounded-[40px] overflow-hidden border border-studio-border bg-white shadow-xl">
+                <img
+                  src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  alt="Static Product"
+                />
+                <div className="absolute top-8 left-8 bg-black/80 backdrop-blur-md px-6 py-2 rounded-full border border-white/10">
+                  <span className="text-white text-xs font-black tracking-widest uppercase">Before: Static Photo</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* After: AI Video */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex flex-col gap-6"
+            >
+              <div className="relative studio-card-9-16 rounded-[40px] overflow-hidden border border-studio-purple/30 bg-studio-text-main shadow-2xl">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                >
+                  <source src="https://cdn.shopify.com/videos/c/o/v/c7c7f3b890a84d6682de0a960714c7c7.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute top-8 left-8 bg-studio-purple px-6 py-2 rounded-full shadow-lg shadow-studio-purple/40">
+                  <span className="text-white text-xs font-black tracking-widest uppercase flex items-center gap-2">
+                    <Sparkles className="w-3 h-3" /> After: AI Generated Ad
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Structured Showcase Section */}
       <section id="portfolio" className="py-32 bg-white">
         <div className="container mx-auto px-6 md:px-4">
@@ -218,14 +281,28 @@ export function Landing() {
                   </div>
                 </div>
 
-                <div className="studio-card-9-16 rounded-[40px] border border-studio-border bg-studio-surface shadow-xl hover:shadow-2xl transition-all duration-700 overflow-hidden group">
-                  <img
-                    src={item.thumbnail}
-                    alt={item.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                  />
+                <div className="studio-card-9-16 rounded-[40px] border border-studio-border bg-studio-surface shadow-xl hover:shadow-2xl transition-all duration-700 overflow-hidden group relative">
+                  {item.videoUrl ? (
+                    <video
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    >
+                      <source src={item.videoUrl} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <img
+                      src={item.thumbnail}
+                      alt={item.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    />
+                  )}
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   {/* Performance Overlay */}
                   <div className="absolute inset-x-4 bottom-4 z-20">
