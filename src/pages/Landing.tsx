@@ -77,12 +77,15 @@ export function Landing() {
               muted
               loop
               playsInline
-              preload="none"
+              preload="auto"
               className="w-full h-full object-cover"
               onMouseEnter={(e) => e.currentTarget.play()}
               onMouseLeave={(e) => {
                 e.currentTarget.pause();
                 e.currentTarget.currentTime = 0;
+              }}
+              onLoadedData={(e) => {
+                e.currentTarget.currentTime = 0.1;
               }}
             >
               <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD_muted.mp4" type="video/mp4" />
@@ -109,12 +112,15 @@ export function Landing() {
               muted
               loop
               playsInline
-              preload="none"
+              preload="auto"
               className="w-full h-full object-cover"
               onMouseEnter={(e) => e.currentTarget.play()}
               onMouseLeave={(e) => {
                 e.currentTarget.pause();
                 e.currentTarget.currentTime = 0;
+              }}
+              onLoadedData={(e) => {
+                e.currentTarget.currentTime = 0.1;
               }}
             >
               <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd_muted.mp4" type="video/mp4" />
@@ -132,12 +138,15 @@ export function Landing() {
               muted
               loop
               playsInline
-              preload="none"
+              preload="auto"
               className="w-full h-full object-cover"
               onMouseEnter={(e) => e.currentTarget.play()}
               onMouseLeave={(e) => {
                 e.currentTarget.pause();
                 e.currentTarget.currentTime = 0;
+              }}
+              onLoadedData={(e) => {
+                e.currentTarget.currentTime = 0.1;
               }}
             >
               <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd_muted.mp4" type="video/mp4" />
