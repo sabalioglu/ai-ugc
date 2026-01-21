@@ -190,7 +190,7 @@ export function Landing() {
             >
               <div className="relative studio-card-9-16 rounded-3xl overflow-hidden border border-studio-border bg-white shadow-lg">
                 <img
-                  src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop"
+                  src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/product-images/a4c95f56-4af2-4c74-b681-c1bf51782291/job_1768411532862_2jia18.jpg"
                   className="absolute inset-0 w-full h-full object-cover"
                   alt="Static Product"
                 />
@@ -215,7 +215,8 @@ export function Landing() {
                   playsInline
                   className="absolute inset-0 w-full h-full object-cover"
                 >
-                  <source src="https://cdn.shopify.com/videos/c/o/v/c7c7f3b890a84d6682de0a960714c7c7.mp4" type="video/mp4" />
+                  <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/quicktime" />
+                  <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.MOV" type="video/mp4" />
                 </video>
                 <div className="absolute top-8 left-8 bg-studio-purple px-6 py-2 rounded-full shadow-lg shadow-studio-purple/40">
                   <span className="text-white text-xs font-black tracking-widest uppercase flex items-center gap-2">
