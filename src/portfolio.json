@@ -38,13 +38,5 @@
     "thumbnail": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop",
     "videoUrl": "https://cdn.shopify.com/videos/c/o/v/c7c7f3b890a84d6682de0a960714c7c7.mp4",
     "type": "tall"
-  },
-  {
-    "id": "6",
-    "title": "Street Style",
-    "category": "Social Content",
-    "thumbnail": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1920&auto=format&fit=crop",
-    "videoUrl": "https://cdn.shopify.com/videos/c/o/v/6dfda8257f8d48858e390979da7619a9.mp4",
-    "type": "standard"
   }
 ]

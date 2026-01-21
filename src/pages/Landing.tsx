@@ -210,7 +210,6 @@ export function Landing() {
               <div className="relative studio-card-9-16 rounded-3xl overflow-hidden border border-studio-purple/30 bg-studio-text-main shadow-xl">
                 <video
                   autoPlay
-                  muted
                   loop
                   playsInline
                   className="absolute inset-0 w-full h-full object-cover"
@@ -303,7 +302,6 @@ export function Landing() {
                     />
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   {/* Performance Overlay */}
                   <div className="absolute inset-x-4 bottom-4 z-20">

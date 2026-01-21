@@ -1,0 +1,190 @@
+{
+  "name": "Mail Özet Otomasyonu",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": true,
+        "filters": {
+          "labelIds": ["INBOX", "UNREAD"]
+        }
+      },
+      "id": "gmail-trigger-1",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "summarize",
+        "text": "={{ $json.plainText }}",
+        "options": {
+          "maxLength": 200,
+          "language": "Turkish"
+        }
+      },
+      "id": "openai-summarize",
+      "name": "OpenAI Özet",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "1",
+          "name": "OpenAI Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo-preview",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Sen profesyonel bir mail özet asistanısın. Gelen mailleri kısa, öz ve anlaşılır şekilde Türkçe özetle. Maksimum 3-4 cümle kullan."
+            },
+            {
+              "role": "user",
+              "content": "Aşağıdaki maili özetle:\n\nKonu: {{ $json.subject }}\nGönderen: {{ $json.from }}\nİçerik: {{ $json.plainText }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.3,
+          "maxTokens": 300
+        }
+      },
+      "id": "openai-chat",
+      "name": "OpenAI Chat GPT-4",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "1",
+          "name": "OpenAI Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SUPABASE_URL }}/functions/v1/save-mail-summary",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mail_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "from",
+              "value": "={{ $json.from }}"
+            },
+            {
+              "name": "subject",
+              "value": "={{ $json.subject }}"
+            },
+            {
+              "name": "summary",
+              "value": "={{ $json.choices[0].message.content }}"
+            },
+            {
+              "name": "received_at",
+              "value": "={{ $json.date }}"
+            },
+            {
+              "name": "original_text",
+              "value": "={{ $json.plainText }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-request-supabase",
+      "name": "Supabase'e Kaydet",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [850, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "2",
+          "name": "Supabase Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "channel": "#mail-summaries",
+        "text": "📧 *Yeni Mail Özeti*\n\n*Gönderen:* {{ $json.from }}\n*Konu:* {{ $json.subject }}\n\n*Özet:*\n{{ $node[\"OpenAI Chat GPT-4\"].json.choices[0].message.content }}",
+        "otherOptions": {}
+      },
+      "id": "slack-notification",
+      "name": "Slack Bildirim",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [1050, 300],
+      "credentials": {
+        "slackApi": {
+          "id": "3",
+          "name": "Slack Account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Chat GPT-4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat GPT-4": {
+      "main": [
+        [
+          {
+            "node": "Supabase'e Kaydet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase'e Kaydet": {
+      "main": [
+        [
+          {
+            "node": "Slack Bildirim",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-01-21T13:00:00.000Z",
+  "versionId": "1"
+}
