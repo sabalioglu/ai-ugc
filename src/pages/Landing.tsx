@@ -79,21 +79,13 @@ export function Landing() {
         <div className="absolute left-[4%] top-[15%] hidden xl:block w-44 studio-float studio-rotate-left z-20">
           <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105 group">
             <video
+              autoPlay
               muted
               loop
               playsInline
-              preload="auto"
               className="w-full h-full object-cover"
-              onMouseEnter={(e) => e.currentTarget.play()}
-              onMouseLeave={(e) => {
-                e.currentTarget.pause();
-                e.currentTarget.currentTime = 0;
-              }}
-              onLoadedData={(e) => {
-                e.currentTarget.currentTime = 0.1;
-              }}
             >
-              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD_muted.mp4" type="video/mp4" />
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD_muted.webm" type="video/webm" />
             </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">+42% ROAS</div>
@@ -102,8 +94,16 @@ export function Landing() {
         </div>
 
         <div className="absolute left-[10%] bottom-[12%] hidden xl:block w-48 studio-float studio-rotate-right animation-delay-3000 z-10">
-          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105">
-            <img src={portfolioData[3].thumbnail} className="w-full h-full object-cover" alt="" fetchPriority="high" decoding="async" />
+          <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105 group">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/Candle.webm" type="video/webm" />
+            </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">GLOBAL REACH</div>
             </div>
@@ -114,21 +114,13 @@ export function Landing() {
         <div className="absolute right-[4%] top-[20%] hidden xl:block w-52 studio-float studio-rotate-right animation-delay-1000 z-20">
           <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105 group">
             <video
+              autoPlay
               muted
               loop
               playsInline
-              preload="auto"
               className="w-full h-full object-cover"
-              onMouseEnter={(e) => e.currentTarget.play()}
-              onMouseLeave={(e) => {
-                e.currentTarget.pause();
-                e.currentTarget.currentTime = 0;
-              }}
-              onLoadedData={(e) => {
-                e.currentTarget.currentTime = 0.1;
-              }}
             >
-              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd_muted.mp4" type="video/mp4" />
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd_muted.webm" type="video/webm" />
             </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">3.8x CONV</div>
@@ -140,21 +132,13 @@ export function Landing() {
         <div className="absolute right-[10%] bottom-[15%] hidden xl:block w-44 studio-float studio-rotate-left animation-delay-2000 z-10">
           <div className="studio-card-9-16 rounded-2xl border border-studio-border bg-studio-surface shadow-2xl overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-700 hover:scale-105 group">
             <video
+              autoPlay
               muted
               loop
               playsInline
-              preload="auto"
               className="w-full h-full object-cover"
-              onMouseEnter={(e) => e.currentTarget.play()}
-              onMouseLeave={(e) => {
-                e.currentTarget.pause();
-                e.currentTarget.currentTime = 0;
-              }}
-              onLoadedData={(e) => {
-                e.currentTarget.currentTime = 0.1;
-              }}
             >
-              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd_muted.mp4" type="video/mp4" />
+              <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd_muted.webm" type="video/webm" />
             </video>
             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="text-white font-black text-[10px] tracking-widest">5.2% CTR</div>
@@ -329,7 +313,7 @@ export function Landing() {
                   playsInline
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 >
-                  <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd_muted.mp4" type="video/mp4" />
+                  <source src="https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.mp4" type="video/mp4" />
                 </video>
 
                 {/* After AI Generated Label - Top Center */}
@@ -398,10 +382,10 @@ export function Landing() {
                 metric: '3.8x CONV'
               },
               {
-                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/GoliAd.mp4',
-                title: 'Goli Nutrition',
-                category: 'Wellness',
-                metric: '5.2% CTR'
+                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/A_vertical_UGC-style_video_showcasing_scented_cand-1769020475212.mp4',
+                title: 'Scented Candles',
+                category: 'Home & Lifestyle',
+                metric: '4.1% CTR'
               }
             ].map((ad, idx) => (
               <motion.div
@@ -424,17 +408,10 @@ export function Landing() {
                     </video>
 
                     {/* Metric Badge */}
-                    <div className="absolute top-4 right-4 bg-studio-neon-lime px-4 py-2 rounded-full shadow-lg z-10">
+                    <div className="absolute top-4 right-4 bg-studio-neon-lime px-4 py-2 rounded-full shadow-lg z-10 pointer-events-none">
                       <span className="text-black text-[10px] font-black tracking-widest uppercase">
                         {ad.metric}
                       </span>
-                    </div>
-
-                    {/* Play Overlay Hint */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                      <div className="bg-white/95 backdrop-blur-xl p-8 rounded-full shadow-2xl border border-white/40">
-                        <Play className="w-12 h-12 text-studio-purple fill-current ml-1" />
-                      </div>
                     </div>
                   </div>
 
