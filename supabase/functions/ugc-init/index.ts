@@ -18,7 +18,7 @@ interface RequestPayload {
   userEmail: string;
 }
 
-const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyAXXaJA9uyS9loxITDu7CsxvTGbTz5jt88';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
@@ -31,7 +31,7 @@ serve(async (req) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const payload: RequestPayload = await req.json();
 
-    console.log(`[ugc-init] Starting job: ${payload.job_id}`);
+    console.log("[ugc-init] Starting job: " + payload.job_id);
 
     // Update status: Initializing AI Analysis
     await supabase
@@ -51,19 +51,18 @@ serve(async (req) => {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: `You are an expert UGC content strategist. Analyze this product photo and details:
-              Product Name: ${payload.productName}
-              Description: ${payload.productDescription}
-              Target Audience: ${payload.targetAudience}
-              
-              Return a JSON object with:
-              - category
-              - branding_text (key phrases)
-              - color_palette (array)
-              - key_visual_features (array)
-              - material_description
-              - visual_vibe
-              - target_audience_summary` 
+            { text: "You are an expert UGC content strategist. Analyze this product photo and details:\n" +
+              "Product Name: " + payload.productName + "\n" +
+              "Description: " + payload.productDescription + "\n" +
+              "Target Audience: " + payload.targetAudience + "\n\n" +
+              "Return a JSON object with:\n" +
+              "- category\n" +
+              "- branding_text (key phrases)\n" +
+              "- color_palette (array)\n" +
+              "- key_visual_features (array)\n" +
+              "- material_description\n" +
+              "- visual_vibe\n" +
+              "- target_audience_summary"
             },
             { 
               inline_data: {
@@ -92,15 +91,14 @@ serve(async (req) => {
       method: "POST",
       body: JSON.stringify({
         contents: [{
-          parts: [{ text: `Generate a UGC video script based on this analysis:
-            Analysis: ${JSON.stringify(productAnalysis)}
-            Platform: ${payload.platform}
-            Duration: ${payload.duration}s
-            UGC Style: ${payload.ugcStyleDetails}
-            
-            Return a JSON object with:
-            - scenes: Array of { scene_number, visual_description, spoken_script, duration }
-            - creator_persona: { age, gender, ethnicity, style_aesthetic, personality }`
+          parts: [{ text: "Generate a UGC video script based on this analysis:\n" +
+            "Analysis: " + JSON.stringify(productAnalysis) + "\n" +
+            "Platform: " + payload.platform + "\n" +
+            "Duration: " + payload.duration + "s\n" +
+            "UGC Style: " + payload.ugcStyleDetails + "\n\n" +
+            "Return a JSON object with:\n" +
+            "- scenes: Array of { scene_number, visual_description, spoken_script, duration }\n" +
+            "- creator_persona: { age, gender, ethnicity, style_aesthetic, personality }"
           }]
         }],
         generationConfig: { 

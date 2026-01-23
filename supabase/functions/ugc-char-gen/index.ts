@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const KIE_API_KEY = Deno.env.get('KIE_API_KEY');
+const KIE_API_KEY = Deno.env.get('KIE_API_KEY') || 'be2a13c69e352161fd623df5ad90de0f';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
@@ -23,7 +23,7 @@ serve(async (req) => {
       return new Response('Skipping - not ready for character generation', { status: 200 });
     }
 
-    console.log(`[ugc-char-gen] Processing job: ${record.job_id}`);
+    console.log("[ugc-char-gen] Processing job: " + record.job_id);
 
     // Update status to processing char
     await supabase
@@ -36,8 +36,7 @@ serve(async (req) => {
 
     // 1. Initial Request to Kie.ai
     // We use the character description from Gemini (creator_persona)
-    const persona = record.character_model;
-    const prompt = `A professional UGC creator, ${persona.age} year old ${persona.ethnicity} ${persona.gender}, ${persona.style_aesthetic} style, ${persona.personality}. High quality, realistic lighting, studio background.`;
+    const prompt = "A professional UGC creator, " + persona.age + " year old " + persona.ethnicity + " " + persona.gender + ", " + persona.style_aesthetic + " style, " + persona.personality + ". High quality, realistic lighting, studio background.";
 
     const kieResponse = await fetch('https://api.kie.ai/v1/generate/character', {
       method: 'POST',
@@ -64,7 +63,7 @@ serve(async (req) => {
     const maxAttempts = 20;
 
     while (attempts < maxAttempts) {
-      console.log(`[ugc-char-gen] Polling Kie.ai (Attempt ${attempts + 1})...`);
+      console.log("[ugc-char-gen] Polling Kie.ai (Attempt " + (attempts + 1) + ")...");
       
       const statusResponse = await fetch(`https://api.kie.ai/v1/status/${taskId}`, {
         headers: { 'Authorization': `Bearer ${KIE_API_KEY}` }

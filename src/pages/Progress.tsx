@@ -407,4 +407,47 @@ export function ProgressPage() {
               {/* Data Snapshot */}
               <Card className="bg-gray-50/50 dark:bg-black/20 border-none">
                 <CardContent className="p-6 space-y-4">
-                  <div className="flex justify-between items-center pb-3 border-b border-gray-200/50 dark:border-gray-80
+                  <div className="flex justify-between items-center pb-3 border-b border-gray-200/50 dark:border-gray-800/50">
+                    <span className="text-xs text-gray-500 font-medium">PROJECT NAME</span>
+                    <span className="text-sm font-bold truncate max-w-[150px]">{job.product_name}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-gray-200/50 dark:border-gray-800/50">
+                    <span className="text-xs text-gray-500 font-medium">FORMAT</span>
+                    <Badge variant="outline" className="text-[10px]">{job.platform.toUpperCase()} ({job.aspect_ratio})</Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500 font-medium">EST. LENGTH</span>
+                    <span className="text-sm font-bold">{job.duration} SECONDS</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Action Footer */}
+              <div className="flex flex-col gap-3">
+                <Button
+                  onClick={() => navigate('/generate')}
+                  variant={isCompleted ? "outline" : "default"}
+                  size="lg"
+                  className="w-full h-14 font-bold text-lg rounded-2xl shadow-xl hover:scale-[1.02] transition-transform"
+                >
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Generate New Ad
+                </Button>
+                {(isCompleted || isFailed) && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => navigate('/videos')}
+                    className="w-full text-gray-500 hover:text-purple-600 h-12"
+                  >
+                    View Project History
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}
+
