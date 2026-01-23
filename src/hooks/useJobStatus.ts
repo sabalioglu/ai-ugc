@@ -10,6 +10,8 @@ export function useJobStatus(jobId: string | undefined) {
   useEffect(() => {
     if (!jobId) return;
 
+    console.log('[useJobStatus] Subscription initialized for job:', jobId);
+
     const channel = supabase
       .channel(`job-status:${jobId}`)
       .on(
@@ -21,9 +23,23 @@ export function useJobStatus(jobId: string | undefined) {
           filter: `job_id=eq.${jobId}`,
         },
         (payload) => {
-          console.log('Realtime update received:', payload);
-          // Manually update the query cache with the new data
-          queryClient.setQueryData(['job-status', jobId], payload.new);
+          console.log('[useJobStatus] Realtime update received:', payload);
+
+          // Merge with existing data to preserve all fields
+          queryClient.setQueryData(['job-status', jobId], (old: VideoJob | null) => {
+            if (!old) return payload.new as VideoJob;
+
+            // Merge new data with old, preserving all fields
+            const merged = { ...old, ...payload.new };
+
+            // If status changed to completed, trigger a full refetch to ensure data integrity
+            if (payload.new.status === 'completed' && old.status !== 'completed') {
+              console.log('[useJobStatus] Job completed! Triggering full refetch...');
+              queryClient.invalidateQueries({ queryKey: ['job-status', jobId] });
+            }
+
+            return merged as VideoJob;
+          });
         }
       )
       .subscribe();
@@ -72,6 +88,13 @@ export function useJobStatus(jobId: string | undefined) {
     refetchInterval: false,
   });
 
+  // Debug logging
+  useEffect(() => {
+    if (queryResult.data) {
+      console.log('[useJobStatus] Current status:', queryResult.data.status, 'Progress:', queryResult.data.progress_percentage);
+    }
+  }, [queryResult.data?.status, queryResult.data?.progress_percentage]);
+
   // PROGRESS SIMULATION
   // Automatically increases progress to 95% over 10 minutes (600 seconds)
   // No timeout - waits indefinitely for N8N workflow completion
@@ -81,6 +104,7 @@ export function useJobStatus(jobId: string | undefined) {
 
     // Stop simulation if actually completed or failed in DB
     if (job.status === 'completed' || job.status === 'failed') {
+      console.log('[useJobStatus] Simulation stopped - job status:', job.status);
       return;
     }
 
@@ -96,7 +120,10 @@ export function useJobStatus(jobId: string | undefined) {
         if (simulatedProgress < 0) simulatedProgress = 0;
 
         const currentProgress = job.progress_percentage || 0;
-        if (simulatedProgress > currentProgress) {
+
+        // Only update if simulated progress is higher AND we're not completed
+        // This prevents simulation from overwriting real progress updates
+        if (simulatedProgress > currentProgress && job.status !== 'completed') {
           queryClient.setQueryData(['job-status', jobId], (old: VideoJob) => ({
             ...old,
             progress_percentage: simulatedProgress,
