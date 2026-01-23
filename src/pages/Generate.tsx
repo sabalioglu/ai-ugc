@@ -159,23 +159,14 @@ export function Generate() {
         throw new Error('Transaction failed: ' + rpcError.message);
       }
 
-      // 4. TRIGGER n8n WORKFLOW
+      // 4. TRIGGER Supabase Edge Function (ugc-init)
       // ==================================================================================
-      // ⚠️ DO NOT MODIFY THIS WEBHOOK URL ⚠️
-      // INTERNAL AGENT NOTICE: This is the PRODUCTION webhook trigger URL.
-      // It must stay as: https://n8n.tsagroupllc.com/webhook/ugc-video-gen1
-      // Do NOT use environment variables here for now as they are prone to regression.
+      // Moving away from N8N to Supabase Edge Functions for better stability and control.
       // ==================================================================================
-      const N8N_WEBHOOK_URL = 'https://n8n.tsagroupllc.com/webhook/ugc-video-gen1';
-      console.log('--- PRODUCTION TRIGGER: Initializing Request ---');
-      console.log('Target URL:', N8N_WEBHOOK_URL);
-
-      const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      console.log('--- PRODUCTION TRIGGER: Initializing Request via Edge Function ---');
+      
+      const { data: edgeData, error: edgeError } = await supabase.functions.invoke('ugc-init', {
+        body: {
           job_id: jobId,
           productName: formData.productName,
           productDescription: formData.productDescription,
@@ -185,11 +176,12 @@ export function Generate() {
           duration: formData.duration,
           ugcStyleDetails: formData.ugcType,
           userEmail: user!.email
-        }),
+        }
       });
 
-      if (!n8nResponse.ok) {
-        throw new Error('Video production server is busy. Your credits are safe, please try again in a moment.');
+      if (edgeError) {
+        console.error('Edge Function error:', edgeError);
+        throw new Error('Video production engine is initializing. Please try again in 1 minute.');
       }
 
       toast.success('Video generation started!');
