@@ -247,19 +247,53 @@ export function ProgressPage() {
 
               {/* Main Result: Video or Error */}
               {isCompleted && job.video_url && (
-                <Card className="overflow-hidden bg-black border-none shadow-[0_30px_80px_-20px_rgba(168,85,247,0.4)] rounded-3xl group">
-                  <div className="aspect-[9/16] relative flex items-center justify-center max-h-[700px]">
-                    <video
-                      src={job.video_url}
-                      controls
-                      autoPlay
-                      loop
-                      className="h-full w-auto transition-transform duration-700"
-                    >
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                </Card>
+                <>
+                  <Card className="overflow-hidden bg-black border-none shadow-[0_30px_80px_-20px_rgba(168,85,247,0.4)] rounded-3xl group">
+                    <div className="aspect-[9/16] relative flex items-center justify-center max-h-[700px]">
+                      <video
+                        src={job.video_url}
+                        controls
+                        autoPlay
+                        loop
+                        className="h-full w-auto transition-transform duration-700"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </Card>
+
+                  {/* Video Segments Grid */}
+                  {job.scene_videos && job.scene_videos.length > 0 && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Video className="w-5 h-5 text-purple-500" />
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                          Video Segments ({job.scene_videos.length})
+                        </h3>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {job.scene_videos.map((segment) => (
+                          <Card key={segment.scene_number} className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50">
+                            <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
+                              <CardTitle className="text-xs uppercase tracking-widest text-gray-400 font-bold">
+                                Segment {segment.scene_number}
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0 aspect-[9/16] relative group">
+                              <video
+                                src={segment.video_url}
+                                controls
+                                className="w-full h-full object-cover"
+                              >
+                                Your browser does not support the video tag.
+                              </video>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
               {isFailed && (
