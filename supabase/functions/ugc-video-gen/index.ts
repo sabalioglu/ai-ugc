@@ -25,107 +25,215 @@ serve(async (req) => {
 
     console.log("[ugc-video-gen] Processing job: " + record.job_id);
 
-    const scenes = record.scenes || [];
-    const videoUrls: string[] = [];
+    const duration = parseInt(record.duration) || 24;
+    const isLongVideo = duration > 12; // DurationCheck node logic
+    const numSegments = isLongVideo ? Math.ceil(duration / 8) : 2; // Veo (8s segments) vs SeeDance (2 scenes)
+    const segmentDuration = isLongVideo ? 8 : (duration / 2);
 
-    // Update initial progress
-    await supabase
-      .from('video_jobs')
-      .update({ 
-        current_step: "Generating " + scenes.length + " video scenes...",
-        progress_percentage: 50
+    // STAGE 3a: LLM Scene Strategy (Gemini 2.5 Pro Logic)
+    console.log(`[ugc-video-gen] Stage 3a: Generating ${numSegments}-scene narrative...`);
+
+    // Update status
+    await supabase.from('video_jobs').update({
+      current_step: `Developing ${numSegments}-scene cinematic strategy...`,
+      progress_percentage: 50
+    }).eq('job_id', record.job_id);
+
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyAXXaJA9uyS9loxITDu7CsxvTGbTz5jt88';
+
+    // Prepare character data for LLM
+    const charData = record.character_model || {};
+    const productData = record.product_analysis || {};
+
+    const strategyPrompt = `
+You are an elite UGC scriptwriter. Craft a compelling ${numSegments}-scene narrative that sells ${productData.product_name || 'the product'}.
+
+## CREATIVE MANDATE
+1. Scene 1 = Impact Hook / Problem
+2. Sequential development leading to...
+3. Final Scene = The Victory Lap (Transformation/Solution + Product Prominent)
+- Generate exactly ${numSegments} scenes.
+- Each scene needs a hyper-detailed image generation prompt (1500+ chars).
+
+## OUTPUT FORMAT
+Return ONLY JSON. No markdown fences.
+{
+  "scenes": [
+    {
+      "scene_number": 1,
+      "promptForImageGen": "1500+ character ultra-detailed prompt",
+      "emotion": "Frustrated",
+      "narrative": { "storyBeat": "..." }
+    },
+    ...
+  ]
+}
+`;
+
+    const llmResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
+      method: "POST",
+      body: JSON.stringify({
+        contents: [{
+          parts: [{ text: strategyPrompt }]
+        }]
       })
-      .eq('job_id', record.job_id);
+    });
 
-    // VIDEO GENERATION LOOP
-    for (let i = 0; i < scenes.length; i++) {
-        const scene = scenes[i];
-        console.log("[ugc-video-gen] Generating Scene " + (i + 1) + "/" + scenes.length);
+    const llmData = await llmResponse.json();
+    let llmResultRaw = llmData.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!llmResultRaw) throw new Error("Scene Strategy LLM call failed");
 
-        // Update progress for each scene
-        await supabase
-          .from('video_jobs')
-          .update({ 
-            current_step: "Generating Scene " + (i + 1) + "/" + scenes.length + ": " + scene.visual_description.substring(0, 30) + "...",
-            progress_percentage: 50 + ((i / scenes.length) * 40)
-          })
-          .eq('job_id', record.job_id);
+    llmResultRaw = llmResultRaw.replace(/```json/g, "").replace(/```/g, "").trim();
+    const strategyResult = JSON.parse(llmResultRaw);
 
-        // API Call to Kie.ai Video Generation
-        const kieResponse = await fetch('https://api.kie.ai/v1/generate/video', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${KIE_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                image_url: record.character_image_url,
-                prompt: scene.visual_description,
-                duration: scene.duration || 8
-            })
+    // Save strategy to database
+    await supabase.from('video_jobs').update({
+      scenes: strategyResult.scenes,
+      current_step: "Script ready! Generating cinematic frames...",
+      progress_percentage: 65
+    }).eq('job_id', record.job_id);
+
+
+    // STAGE 3b: Frame Generation (Parallelized for N segments)
+    console.log(`[ugc-video-gen] Stage 3b: Triggering ${numSegments} frames in parallel...`);
+
+    const initiateTask = async (idx: number) => {
+      const kieRes = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${KIE_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: "nano-banana-pro",
+          input: { prompt: strategyResult.scenes[idx].promptForImageGen, image_url: record.character_image_url }
+        })
+      });
+      const d = await kieRes.json();
+      const tid = d.task_id || (d.data && (d.data.taskId || d.data.recordId));
+      if (!tid) throw new Error(`Kie.ai frame ${idx + 1} failed to start`);
+      return tid;
+    };
+
+    const taskIds = await Promise.all(strategyResult.scenes.map((_, i) => initiateTask(i)));
+    const frameUrls: string[] = new Array(numSegments).fill("");
+
+    const pollTask = async (idx: number) => {
+      let attempts = 0;
+      while (attempts < 60) {
+        const statusRes = await fetch(`https://api.kie.ai/api/v1/jobs/recordInfo?taskId=${taskIds[idx]}`, {
+          headers: { 'Authorization': `Bearer ${KIE_API_KEY}` }
         });
+        const res = await statusRes.json();
+        const statusData = res.data || res;
+        const currentStatus = statusData.status || res.status;
 
-        if (!kieResponse.ok) {
-            const errorText = await kieResponse.text();
-            throw new Error(`Kie.ai Video Request failed: ${errorText}`);
+        if (currentStatus === 'success' || currentStatus === 'completed') {
+          const url = statusData.image_url || statusData.output?.[0] || (statusData.output && statusData.output.image_url);
+          frameUrls[idx] = url;
+          if (idx === 0) await supabase.from('video_jobs').update({ start_frame_url: url }).eq('job_id', record.job_id);
+          if (idx === numSegments - 1) await supabase.from('video_jobs').update({ end_frame_url: url }).eq('job_id', record.job_id);
+          return url;
+        } else if (currentStatus === 'failed') {
+          throw new Error(`Frame ${idx + 1} failed: ${statusData.error || statusData.msg}`);
         }
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        attempts++;
+      }
+      throw new Error(`Frame ${idx + 1} polling timed out.`);
+    };
 
-        const kieData = await kieResponse.json();
-        const taskId = kieData.task_id;
+    console.log("[ugc-video-gen] Polling for frames...");
+    await Promise.all(strategyResult.scenes.map((_, i) => pollTask(i)));
 
-        // Polling for this specific scene
-        let sceneVideoUrl = null;
-        let attempts = 0;
-        const maxAttempts = 30; // 30 * 5s = 150s (Max for Edge Function)
+    // STAGE 3c: Vision-based ScriptWriter (Analyzes ALL generated frames)
+    console.log("[ugc-video-gen] Stage 3c: Analyzing frames for final script...");
 
-        while (attempts < maxAttempts) {
-            const statusResponse = await fetch(`https://api.kie.ai/v1/status/${taskId}`, {
-                headers: { 'Authorization': `Bearer ${KIE_API_KEY}` }
-            });
-            const statusData = await statusResponse.json();
+    await supabase.from('video_jobs').update({
+      current_step: "AI Director analyzing cinematic frames for flow...",
+      progress_percentage: 85
+    }).eq('job_id', record.job_id);
 
-            if (statusData.status === 'completed') {
-                sceneVideoUrl = statusData.video_url;
-                break;
-            } else if (statusData.status === 'failed') {
-                throw new Error(`Kie.ai video generation failed for scene ${i+1}: ${statusData.error}`);
-            }
+    // Fetch images to pass as base64 to Gemini
+    const fetchImageBase64 = async (url: string) => {
+      const res = await fetch(url);
+      const buffer = await res.arrayBuffer();
+      let binary = "";
+      const bytes = new Uint8Array(buffer);
+      for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+      return btoa(binary);
+    };
 
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            attempts++;
-        }
+    const framesB64 = await Promise.all(frameUrls.map(url => fetchImageBase64(url)));
 
-        if (sceneVideoUrl) {
-            videoUrls.push(sceneVideoUrl);
-            // Save the individual segment
-            const updateObj: any = {};
-            updateObj[`video_url_${i + 1}`] = sceneVideoUrl;
-            await supabase
-              .from('video_jobs')
-              .update(updateObj)
-              .eq('job_id', record.job_id);
-        } else {
-            console.warn(`[ugc-video-gen] Scene ${i+1} timed out or failed to return URL`);
-        }
-    }
+    const scriptPrompt = `
+You are a professional UGC Video Scriptwriter. Analyze these ${numSegments} sequential images and write an authentic conversational script.
 
-    // SKIP ASSEMBLY - Mark as completed since FFmpeg is not yet integrated
+YOUR TASK: 
+1. Write ONE continuous story across ${numSegments} sequential clips.
+2. Generate ${isLongVideo ? 'Veo 3.1 Extension' : 'Kling v1.6 Pro'} motion prompts for each scene. 
+   ${isLongVideo ? `- IMPORTANT: For Veo 3.1, Scene 1 is the base video. Scenes 2-${numSegments} are EXTENSIONS. Each extension prompt must detail how the action continues from the END of the previous scene while maintaining perfect visual and character continuity.` : ''}
+
+## OUTPUT FORMAT
+Return ONLY valid JSON.
+{
+  "scenes": [
+    {
+      "scene_number": 1,
+      "motion_prompt": "...",
+      "script": "...",
+      "duration": ${segmentDuration}
+    },
+    ...
+  ]
+}
+`;
+
+    const scriptResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
+      method: "POST",
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: scriptPrompt },
+            ...framesB64.map(b64 => ({ inline_data: { mime_type: "image/png", data: b64 } }))
+          ]
+        }]
+      })
+    });
+
+    const scriptData = await scriptResponse.json();
+    let scriptRaw = scriptData.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!scriptRaw) throw new Error("ScriptWriter LLM call failed");
+
+    scriptRaw = scriptRaw.replace(/```json/g, "").replace(/```/g, "").trim();
+    const scriptResult = JSON.parse(scriptRaw);
+
+    // FINALIZATION
     await supabase
       .from('video_jobs')
       .update({
-        status: 'completed',
-        completed_at: new Date().toISOString(),
-        current_step: 'Video generation completed! All segments ready.',
+        video_segments: scriptResult, // Store the final cinematic strategy
+        status: 'READY_FOR_SYNTHESIS',
+        current_step: 'Cinematic flow ready! Initializing video engines...',
         progress_percentage: 100
       })
       .eq('job_id', record.job_id);
 
-    return new Response(JSON.stringify({ success: true, videos: videoUrls }), {
+    return new Response(JSON.stringify({ success: true, script: scriptResult }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+    return new Response(JSON.stringify({ success: true, script: scriptResult }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
-    console.error(`[ugc-video-gen] Error:`, error.message);
+    console.error("[ugc-video-gen] Error:", error.message);
+    try {
+      const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      const b = await req.clone().json();
+      const rid = b?.record?.job_id;
+      if (rid) {
+        await sb.from('video_jobs').update({ status: 'failed', error_message: error.message }).eq('job_id', rid);
+      }
+    } catch (e) { }
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

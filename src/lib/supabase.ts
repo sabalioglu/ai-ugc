@@ -34,11 +34,17 @@ export interface VideoJob {
   product_category?: string;
   product_analysis?: any;
   character_model?: {
-    age: number;
+    age: string;
     gender: string;
-    style: string;
-    image_url?: string;
+    ethnicity: string;
+    style_aesthetic: string;
+    personality: string;
   };
+  character_image_url?: string;
+  scene_videos?: Array<{
+    scene_number: number;
+    video_url: string;
+  }>;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress_percentage: number;
   current_step?: string;

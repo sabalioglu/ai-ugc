@@ -14,14 +14,25 @@ interface VideoCardProps {
 export function VideoCard({ job, onDelete }: VideoCardProps) {
   const navigate = useNavigate();
 
-  const statusConfig = {
+  const DEFAULT_STATUS = {
+    variant: 'warning' as const,
+    label: 'PROCESSING',
+    color: 'text-studio-purple border-studio-purple/20 bg-studio-purple/5'
+  };
+
+  const statusConfig: Record<string, { variant: any; label: string; color: string }> = {
     completed: { variant: 'success' as const, label: 'COMPLETED', color: 'text-green-600 border-green-200 bg-green-50' },
     processing: { variant: 'warning' as const, label: 'SYNTHESIZING', color: 'text-studio-purple border-studio-purple/20 bg-studio-purple/5' },
+    character_selection: { variant: 'warning' as const, label: 'CREATING PERSONA', color: 'text-studio-purple border-studio-purple/20 bg-studio-purple/5' },
+    scene_generation: { variant: 'warning' as const, label: 'GENERATING SCENES', color: 'text-studio-purple border-studio-purple/20 bg-studio-purple/5' },
+    video_assembly: { variant: 'warning' as const, label: 'ASSEMBLING', color: 'text-studio-purple border-studio-purple/20 bg-studio-purple/5' },
+    READY_FOR_CHAR: { variant: 'warning' as const, label: 'INITIALIZING', color: 'text-studio-purple border-studio-purple/20 bg-studio-purple/5' },
+    READY_FOR_VIDEO: { variant: 'warning' as const, label: 'INITIALIZING', color: 'text-studio-purple border-studio-purple/20 bg-studio-purple/5' },
     pending: { variant: 'secondary' as const, label: 'QUEUED', color: 'text-studio-text-muted border-studio-border bg-studio-surface' },
     failed: { variant: 'destructive' as const, label: 'FAILED', color: 'text-red-600 border-red-200 bg-red-50' },
   };
 
-  const status = statusConfig[job.status];
+  const status = (job.status && statusConfig[job.status]) || DEFAULT_STATUS;
 
   const handleDownload = async () => {
     if (job.video_url) {

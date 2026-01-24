@@ -25,17 +25,18 @@ export function Dashboard() {
     );
   }
 
-  const creditsUsagePercentage = profile
+  const creditsUsagePercentage = profile && (profile.credits_used + profile.credits_balance) > 0
     ? (profile.credits_used / (profile.credits_used + profile.credits_balance)) * 100
     : 0;
 
-  const tierConfig = {
+  const tierConfig: Record<string, { label: string; color: string }> = {
     free: { label: 'Free', color: 'bg-gray-500' },
     pro: { label: 'Pro', color: 'bg-purple-600' },
     enterprise: { label: 'Enterprise', color: 'bg-blue-600' },
   };
 
-  const tier = tierConfig[profile?.subscription_tier as keyof typeof tierConfig || 'free'];
+  const currentTierStr = profile?.subscription_tier?.toLowerCase() || 'free';
+  const tier = tierConfig[currentTierStr] || tierConfig.free;
 
   return (
     <Layout>

@@ -154,7 +154,8 @@ export function ProgressPage() {
     );
   }
 
-  const isProcessing = job.status === 'pending' || job.status === 'processing';
+  const processingStatuses = ['pending', 'processing', 'READY_FOR_CHAR', 'character_selection', 'READY_FOR_VIDEO', 'scene_generation', 'video_assembly'];
+  const isProcessing = processingStatuses.includes(job.status);
   const isCompleted = job.status === 'completed';
   const isFailed = job.status === 'failed';
 
@@ -245,57 +246,24 @@ export function ProgressPage() {
                 </Card>
               )}
 
-              {/* Main Result: Video or Error */}
+              {/* Main Result: Final Video */}
               {isCompleted && job.video_url && (
-                <>
-                  <Card className="overflow-hidden bg-black border-none shadow-[0_30px_80px_-20px_rgba(168,85,247,0.4)] rounded-3xl group">
-                    <div className="aspect-[9/16] relative flex items-center justify-center max-h-[700px]">
-                      <video
-                        src={job.video_url}
-                        controls
-                        autoPlay
-                        loop
-                        className="h-full w-auto transition-transform duration-700"
-                      >
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  </Card>
-
-                  {/* Video Segments Grid */}
-                  {job.scene_videos && job.scene_videos.length > 0 && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Video className="w-5 h-5 text-purple-500" />
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                          Video Segments ({job.scene_videos.length})
-                        </h3>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {job.scene_videos.map((segment) => (
-                          <Card key={segment.scene_number} className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50">
-                            <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
-                              <CardTitle className="text-xs uppercase tracking-widest text-gray-400 font-bold">
-                                Segment {segment.scene_number}
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-0 aspect-[9/16] relative group">
-                              <video
-                                src={segment.video_url}
-                                controls
-                                className="w-full h-full object-cover"
-                              >
-                                Your browser does not support the video tag.
-                              </video>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
+                <Card className="overflow-hidden bg-black border-none shadow-[0_30px_80px_-20px_rgba(168,85,247,0.4)] rounded-3xl group">
+                  <div className="aspect-[9/16] relative flex items-center justify-center max-h-[700px]">
+                    <video
+                      src={job.video_url}
+                      controls
+                      autoPlay
+                      loop
+                      className="h-full w-auto transition-transform duration-700"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </Card>
               )}
 
+              {/* Error State */}
               {isFailed && (
                 <Card className="bg-red-50/50 dark:bg-red-900/10 border-red-200 dark:border-red-900/50 overflow-hidden">
                   <div className="p-12 text-center space-y-6">
@@ -321,75 +289,94 @@ export function ProgressPage() {
                 </Card>
               )}
 
-              {/* Emerging Assets Grid */}
-              {(job.character_model?.image_url || job.product_analysis) && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {job.character_model?.image_url && (
-                    <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50 animate-in zoom-in-95 duration-700">
-                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
-                        <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Creator Persona</CardTitle>
+              {/* Emerging Assets & Production Gallery */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-purple-500" />
+                  <h3 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
+                    Production Asset Gallery
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Phase 1: Character */}
+                  {job.character_image_url && (
+                    <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50 animate-in fade-in zoom-in-95 duration-700">
+                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50 bg-purple-500/5">
+                        <CardTitle className="text-[10px] uppercase tracking-widest text-purple-600 dark:text-purple-400 font-black">AI Character Profile</CardTitle>
                       </CardHeader>
                       <CardContent className="p-0 aspect-square relative group">
-                        <img
-                          src={job.character_model.image_url}
-                          alt="AI Creator"
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={job.character_image_url} alt="AI Creator" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                          <span className="text-white text-[10px] font-bold">BASE REFERENCE</span>
+                        </div>
                       </CardContent>
                     </Card>
                   )}
 
+                  {/* Phase 2: Keyframes */}
                   {job.start_frame_url && (
-                    <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-blue-100/50 dark:border-blue-900/50 animate-in zoom-in-95 duration-700 delay-100">
-                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
-                        <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Opening Scene</CardTitle>
+                    <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-blue-100/50 dark:border-blue-900/50 animate-in fade-in zoom-in-95 duration-700 delay-100">
+                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50 bg-blue-500/5">
+                        <CardTitle className="text-[10px] uppercase tracking-widest text-blue-600 dark:text-blue-400 font-black">Opening Hook Frame</CardTitle>
                       </CardHeader>
-                      <CardContent className="p-0 aspect-video relative group">
-                        <img
-                          src={job.start_frame_url}
-                          alt="Start Frame"
-                          className="w-full h-full object-cover"
-                        />
+                      <CardContent className="p-0 aspect-[9/16] relative group">
+                        <img src={job.start_frame_url} alt="Hook" className="w-full h-full object-cover" />
                       </CardContent>
                     </Card>
                   )}
 
                   {job.end_frame_url && (
-                    <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-blue-100/50 dark:border-blue-900/50 animate-in zoom-in-95 duration-700 delay-200">
-                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
-                        <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Closing Scene</CardTitle>
+                    <Card className="overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-blue-100/50 dark:border-blue-900/50 animate-in fade-in zoom-in-95 duration-700 delay-200">
+                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50 bg-blue-500/5">
+                        <CardTitle className="text-[10px] uppercase tracking-widest text-blue-600 dark:text-blue-400 font-black">Closing CTA Frame</CardTitle>
                       </CardHeader>
-                      <CardContent className="p-0 aspect-video relative group">
-                        <img
-                          src={job.end_frame_url}
-                          alt="End Frame"
-                          className="w-full h-full object-cover"
-                        />
+                      <CardContent className="p-0 aspect-[9/16] relative group">
+                        <img src={job.end_frame_url} alt="CTA" className="w-full h-full object-cover" />
                       </CardContent>
                     </Card>
                   )}
 
-                  {job.product_analysis && (
-                    <Card className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50 animate-in translate-y-4 duration-700 md:col-span-2">
-                      <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
-                        <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">AI Strategic insights</CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-4 space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="p-2 bg-purple-100/30 dark:bg-purple-900/20 rounded-lg border border-purple-200/30 dark:border-purple-800/20">
-                            <p className="text-[9px] font-bold text-purple-600 uppercase mb-1">Target Persona</p>
-                            <p className="text-xs font-medium leading-relaxed">{job.product_analysis.target_audience_summary || "Defining ideal buyer profile..."}</p>
-                          </div>
-                          <div className="p-2 bg-blue-100/30 dark:bg-blue-900/20 rounded-lg border border-blue-200/30 dark:border-blue-800/20">
-                            <p className="text-[9px] font-bold text-blue-600 uppercase mb-1">Visual Direction</p>
-                            <p className="text-xs font-medium leading-relaxed">{job.product_analysis.visual_vibe || "Setting atmospheric parameters..."}</p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
+                  {/* Phase 3: Video Segments (Dynamic) */}
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => {
+                    const videoUrl = (job as any)[`video_url_${i}`];
+                    if (!videoUrl) return null;
+                    return (
+                      <Card key={i} className="overflow-hidden bg-slate-900 border-purple-500/30 shadow-[0_10px_30px_-10px_rgba(168,85,247,0.3)] animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                        <CardHeader className="p-3 border-b border-white/10 bg-gradient-to-r from-purple-500/20 to-blue-500/20">
+                          <CardTitle className="text-[10px] uppercase tracking-widest text-white font-black flex justify-between items-center">
+                            <span>Scene {i} Component</span>
+                            <Badge variant="outline" className="text-[8px] border-white/20 text-white">RAW CLIP</Badge>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0 aspect-[9/16] relative">
+                          <video src={videoUrl} controls loop className="w-full h-full object-cover" />
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
-              )}
+
+                {job.product_analysis && (
+                  <Card className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-purple-100/50 dark:border-purple-900/50 animate-in translate-y-4 duration-700 md:col-span-2 lg:col-span-3">
+                    <CardHeader className="p-3 border-b border-gray-100/50 dark:border-gray-800/50">
+                      <CardTitle className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">AI Strategic insights</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="p-2 bg-purple-100/30 dark:bg-purple-900/20 rounded-lg border border-purple-200/30 dark:border-purple-800/20">
+                          <p className="text-[9px] font-bold text-purple-600 uppercase mb-1">Target Persona</p>
+                          <p className="text-xs font-medium leading-relaxed">{job.product_analysis.target_audience_summary || "Defining ideal buyer profile..."}</p>
+                        </div>
+                        <div className="p-2 bg-blue-100/30 dark:bg-blue-900/20 rounded-lg border border-blue-200/30 dark:border-blue-800/20">
+                          <p className="text-[9px] font-bold text-blue-600 uppercase mb-1">Visual Direction</p>
+                          <p className="text-xs font-medium leading-relaxed">{job.product_analysis.visual_vibe || "Setting atmospheric parameters..."}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </div>
 
             {/* Right Column: Live Timeline & Details */}
