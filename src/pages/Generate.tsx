@@ -159,29 +159,43 @@ export function Generate() {
         throw new Error('Transaction failed: ' + rpcError.message);
       }
 
-      // 4. TRIGGER Supabase Edge Function (ugc-init)
+      // 4. TRIGGER N8N Webhook (Direct)
       // ==================================================================================
-      // Moving away from N8N to Supabase Edge Functions for better stability and control.
+      // Switching to N8N Webhook as per user request (Prod/Test)
       // ==================================================================================
-      console.log('--- PRODUCTION TRIGGER: Initializing Request via Edge Function ---');
-      
-      const { data: edgeData, error: edgeError } = await supabase.functions.invoke('ugc-init', {
-        body: {
-          job_id: jobId,
-          productName: formData.productName,
-          productDescription: formData.productDescription,
-          uploadedImageUrl: productImageUrl,
-          targetAudience: formData.targetAudience,
-          platform: formData.platform,
-          duration: formData.duration,
-          ugcStyleDetails: formData.ugcType,
-          userEmail: user!.email
-        }
+      console.log('--- TRIGGER: Initializing Request via N8N Webhook ---');
+
+      // Update status to processing immediately
+      await supabase.from('video_jobs').update({
+        status: 'processing',
+        current_step: 'Initializing workflow...',
+        progress_percentage: 5
+      }).eq('job_id', jobId);
+
+      const WEBHOOK_URL = import.meta.env.DEV
+        ? 'https://n8n.tsagroupllc.com/webhook-test/ugc-video-gen1'
+        : 'https://n8n.tsagroupllc.com/webhook/ugc-video-gen1';
+
+      const webhookPayload = {
+        job_id: jobId,
+        productName: formData.productName,
+        productDescription: formData.productDescription,
+        uploadedImageUrl: productImageUrl,
+        targetAudience: formData.targetAudience,
+        platform: formData.platform,
+        duration: formData.duration,
+        ugcStyleDetails: formData.ugcType,
+        userEmail: user!.email
+      };
+
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(webhookPayload)
       });
 
-      if (edgeError) {
-        console.error('Edge Function error:', edgeError);
-        throw new Error('Video production engine is initializing. Please try again in 1 minute.');
+      if (!response.ok) {
+        throw new Error('Failed to trigger video generation workflow via N8N');
       }
 
       toast.success('Video generation started!');
