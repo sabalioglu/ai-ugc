@@ -246,22 +246,61 @@ export function ProgressPage() {
                 </Card>
               )}
 
-              {/* Main Result: Final Video */}
-              {isCompleted && job.video_url && (
-                <Card className="overflow-hidden bg-black border-none shadow-[0_30px_80px_-20px_rgba(168,85,247,0.4)] rounded-3xl group">
-                  <div className="aspect-[9/16] relative flex items-center justify-center max-h-[700px]">
-                    <video
-                      src={job.video_url}
-                      controls
-                      autoPlay
-                      loop
-                      className="h-full w-auto transition-transform duration-700"
-                    >
-                      Your browser does not support the video tag.
-                    </video>
+              {/* Main Result: Final Video & Segments */}
+              {isCompleted && (
+                <div className="space-y-8">
+                  {/* Final Combined Video (if exists) */}
+                  {job.video_url && (
+                    <Card className="overflow-hidden bg-black border-none shadow-[0_30px_80px_-20px_rgba(168,85,247,0.4)] rounded-3xl group">
+                      <div className="aspect-[9/16] relative flex items-center justify-center max-h-[700px]">
+                        <video
+                          src={job.video_url}
+                          controls
+                          autoPlay
+                          loop
+                          className="h-full w-auto transition-transform duration-700"
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                      <CardContent className="bg-gray-900/50 p-4 absolute bottom-0 w-full backdrop-blur-md">
+                        <p className="text-white text-center font-bold text-sm tracking-widest uppercase">Final Master Assembly</p>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Generated Scenes Grid */}
+                  <div className="space-y-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+                    <div className="flex items-center gap-2 px-1">
+                      <Video className="w-5 h-5 text-purple-500" />
+                      <h3 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
+                        Generated Scenes ({[1, 2, 3, 4, 5, 6, 7, 8].filter((i) => (job as any)[`video_url_${i}`]).length})
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => {
+                        const videoUrl = (job as any)[`video_url_${i}`];
+                        if (!videoUrl) return null;
+                        return (
+                          <Card key={i} className="overflow-hidden bg-slate-900 border-purple-500/30 shadow-xl group border-2 border-transparent hover:border-purple-500/50 transition-all duration-300">
+                            <CardHeader className="p-3 border-b border-white/10 bg-gradient-to-r from-purple-500/20 to-blue-500/20 flex flex-row justify-between items-center">
+                              <CardTitle className="text-xs uppercase tracking-widest text-white font-black">
+                                Scene {i}
+                              </CardTitle>
+                              <Badge className="bg-purple-500 text-[9px]">READY</Badge>
+                            </CardHeader>
+                            <CardContent className="p-0 aspect-[9/16] relative">
+                              <video src={videoUrl} controls className="w-full h-full object-cover" />
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
                   </div>
-                </Card>
+                </div>
               )}
+
 
               {/* Error State */}
               {isFailed && (
@@ -337,24 +376,7 @@ export function ProgressPage() {
                     </Card>
                   )}
 
-                  {/* Phase 3: Video Segments (Dynamic) */}
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => {
-                    const videoUrl = (job as any)[`video_url_${i}`];
-                    if (!videoUrl) return null;
-                    return (
-                      <Card key={i} className="overflow-hidden bg-slate-900 border-purple-500/30 shadow-[0_10px_30px_-10px_rgba(168,85,247,0.3)] animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                        <CardHeader className="p-3 border-b border-white/10 bg-gradient-to-r from-purple-500/20 to-blue-500/20">
-                          <CardTitle className="text-[10px] uppercase tracking-widest text-white font-black flex justify-between items-center">
-                            <span>Scene {i} Component</span>
-                            <Badge variant="outline" className="text-[8px] border-white/20 text-white">RAW CLIP</Badge>
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-0 aspect-[9/16] relative">
-                          <video src={videoUrl} controls loop className="w-full h-full object-cover" />
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                  {/* Phase 3: Video Segments have been moved to main result area */}
                 </div>
 
                 {job.product_analysis && (
