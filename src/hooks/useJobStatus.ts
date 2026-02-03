@@ -1,77 +1,136 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import type { VideoJob } from '@/lib/supabase';
-import { toast } from 'sonner';
+import type { RealtimeChannel } from '@supabase/supabase-js';
+
+// Auto-refresh interval when realtime updates aren't being received (1 minute)
+const AUTO_REFRESH_INTERVAL_MS = 60000;
+// Timeout to detect if realtime is actually delivering updates (30 seconds)
+const REALTIME_ACTIVITY_TIMEOUT_MS = 30000;
 
 export function useJobStatus(jobId: string | undefined) {
   const queryClient = useQueryClient();
-<<<<<<< HEAD
-=======
-  const [isTimedOut, setIsTimedOut] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
->>>>>>> c14f9e5 (fix(realtime): robust subscription logic and UI badges)
+  const [isRealtimeConnected, setIsRealtimeConnected] = useState(false);
+  const [isRealtimeActive, setIsRealtimeActive] = useState(false);
+  const lastRealtimeUpdateRef = useRef<number>(0);
+
+  // Transform video_url fields into scene_videos array
+  const transformJobData = useCallback((data: any): VideoJob => {
+    const sceneVideos = [];
+    for (let i = 1; i <= 8; i++) {
+      const videoUrl = data[`video_url_${i}`];
+      if (videoUrl) {
+        sceneVideos.push({
+          scene_number: i,
+          video_url: videoUrl,
+        });
+      }
+    }
+    return {
+      ...data,
+      scene_videos: sceneVideos.length > 0 ? sceneVideos : undefined,
+    } as VideoJob;
+  }, []);
 
   // Subscribing to realtime updates
   useEffect(() => {
     if (!jobId) return;
 
-<<<<<<< HEAD
-    console.log('[useJobStatus] Subscription initialized for job:', jobId);
-=======
-    console.log('🔌 Connecting to Realtime for Job:', jobId);
->>>>>>> c14f9e5 (fix(realtime): robust subscription logic and UI badges)
+    console.log('[useJobStatus] Initializing realtime subscription for job:', jobId);
 
-    const channel = supabase
-      .channel(`job-status:${jobId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'video_jobs',
-          filter: `job_id=eq.${jobId}`, // Keep filter, it should work with unique column
-        },
-        (payload) => {
-<<<<<<< HEAD
-          console.log('[useJobStatus] Realtime update received:', payload);
+    let channel: RealtimeChannel | null = null;
 
-          // Merge with existing data to preserve all fields
-          queryClient.setQueryData(['job-status', jobId], (old: VideoJob | null) => {
-            if (!old) return payload.new as VideoJob;
+    const setupChannel = () => {
+      channel = supabase
+        .channel(`job-status:${jobId}`, {
+          config: {
+            presence: { key: jobId },
+          },
+        })
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'video_jobs',
+            filter: `job_id=eq.${jobId}`, // Keep filter
+          },
+          (payload) => {
+            console.log('[useJobStatus] Realtime update received:', {
+              status: payload.new.status,
+              progress: payload.new.progress_percentage,
+              step: payload.new.current_step,
+            });
 
-            // Merge new data with old, preserving all fields
-            const merged = { ...old, ...payload.new };
+            // Track that we received a realtime update
+            lastRealtimeUpdateRef.current = Date.now();
+            setIsRealtimeActive(true);
 
-            // If status changed to completed, trigger a full refetch to ensure data integrity
-            if (payload.new.status === 'completed' && old.status !== 'completed') {
-              console.log('[useJobStatus] Job completed! Triggering full refetch...');
-              queryClient.invalidateQueries({ queryKey: ['job-status', jobId] });
-            }
+            // Merge with existing data to preserve all fields
+            queryClient.setQueryData(['job-status', jobId], (old: VideoJob | null) => {
+              if (!old) return transformJobData(payload.new);
 
-            return merged as VideoJob;
-          });
-=======
-          console.log('⚡ Realtime Update:', payload.new);
-          // Optimistic update
-          queryClient.setQueryData(['job-status', jobId], payload.new);
+              // Merge new data with old, preserving all fields
+              const merged = transformJobData({ ...old, ...payload.new });
 
-          if (payload.new.status === 'completed') {
-            toast.success('Video generation completed!');
+              // If status changed to completed, trigger a full refetch to ensure data integrity
+              if (payload.new.status === 'completed' && old.status !== 'completed') {
+                console.log('[useJobStatus] Job completed! Triggering full refetch...');
+                queryClient.invalidateQueries({ queryKey: ['job-status', jobId] });
+              }
+
+              return merged;
+            });
           }
->>>>>>> c14f9e5 (fix(realtime): robust subscription logic and UI badges)
-        }
-      )
-      .subscribe((status) => {
-        console.log('🔌 Realtime Status:', status);
-        setIsConnected(status === 'SUBSCRIBED');
-      });
+        )
+        .subscribe((status, err) => {
+          console.log('[useJobStatus] Subscription status:', status);
+          if (status === 'SUBSCRIBED') {
+            setIsRealtimeConnected(true);
+            console.log('[useJobStatus] Successfully subscribed to realtime updates');
+          } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+            setIsRealtimeConnected(false);
+            console.error('[useJobStatus] Subscription error:', err);
+          } else if (status === 'CLOSED') {
+            setIsRealtimeConnected(false);
+            console.log('[useJobStatus] Channel closed');
+          }
+        });
+    };
+
+    setupChannel();
 
     return () => {
-      console.log('🔌 Disconnecting Realtime');
-      supabase.removeChannel(channel);
+      if (channel) {
+        console.log('[useJobStatus] Cleaning up realtime subscription');
+        supabase.removeChannel(channel);
+      }
     };
-  }, [jobId, queryClient]);
+  }, [jobId, queryClient, transformJobData]);
+
+  // Auto-refresh fallback monitor
+  useEffect(() => {
+    if (!jobId) return;
+
+    const checkRealtimeActivity = () => {
+      const timeSinceLastUpdate = Date.now() - lastRealtimeUpdateRef.current;
+
+      // If we haven't received any realtime updates in 30 seconds and job is still processing,
+      // mark realtime as inactive so polling kicks in
+      if (isRealtimeConnected && timeSinceLastUpdate > REALTIME_ACTIVITY_TIMEOUT_MS) {
+        console.log('[useJobStatus] Realtime appears stale, marking as inactive');
+        setIsRealtimeActive(false);
+      }
+    };
+
+    // Check realtime activity every 10 seconds
+    const activityCheckInterval = setInterval(checkRealtimeActivity, 10000);
+
+    return () => {
+      clearInterval(activityCheckInterval);
+    };
+  }, [jobId, isRealtimeConnected]);
 
   const queryResult = useQuery({
     queryKey: ['job-status', jobId],
@@ -85,90 +144,47 @@ export function useJobStatus(jobId: string | undefined) {
         .maybeSingle();
 
       if (error) throw error;
-
-      // Transform video_url_1, video_url_2, etc. into scene_videos array
-      if (data) {
-        const sceneVideos = [];
-        for (let i = 1; i <= 8; i++) {
-          const videoUrl = (data as any)[`video_url_${i}`];
-          if (videoUrl) {
-            sceneVideos.push({
-              scene_number: i,
-              video_url: videoUrl,
-            });
-          }
-        }
-
-        // Add scene_videos to the data object
-        return {
-          ...data,
-          scene_videos: sceneVideos.length > 0 ? sceneVideos : undefined,
-        } as VideoJob;
-      }
-
+      if (data) return transformJobData(data);
       return data as VideoJob | null;
     },
     enabled: !!jobId,
-    refetchInterval: 2000, // Faster polling (2s) as fallback
+    // Polling strategy:
+    // 1. If realtime is connected AND actively receiving updates, don't poll
+    // 2. If realtime is connected but inactive (no updates in 30s), poll every minute as fallback
+    // 3. If realtime is not connected at all, poll every 5 seconds
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      // Don't poll if job is completed or failed
+      if (data?.status === 'completed' || data?.status === 'failed') {
+        return false;
+      }
+
+      // If realtime is connected and actively delivering updates, no polling needed
+      if (isRealtimeConnected && isRealtimeActive) {
+        return false;
+      }
+
+      // If realtime is connected but not active (stale), poll every 1 minute as safety net
+      if (isRealtimeConnected && !isRealtimeActive) {
+        console.log('[useJobStatus] Realtime stale, using 1-minute auto-refresh fallback');
+        return AUTO_REFRESH_INTERVAL_MS;
+      }
+
+      // If realtime is not connected, poll every 5 seconds as primary fallback
+      return 5000;
+    },
     refetchOnWindowFocus: true,
   });
 
-<<<<<<< HEAD
   // Debug logging
-=======
-  // PROGRESS SIMULATION & TIMEOUT CHECK
->>>>>>> c14f9e5 (fix(realtime): robust subscription logic and UI badges)
   useEffect(() => {
     if (queryResult.data) {
-      console.log('[useJobStatus] Current status:', queryResult.data.status, 'Progress:', queryResult.data.progress_percentage);
+      const realtimeStatus = isRealtimeConnected
+        ? (isRealtimeActive ? 'active' : 'stale (auto-refresh)')
+        : 'polling';
+      console.log('[useJobStatus] Current status:', queryResult.data.status, 'Progress:', queryResult.data.progress_percentage, 'Realtime:', realtimeStatus);
     }
-  }, [queryResult.data?.status, queryResult.data?.progress_percentage]);
+  }, [queryResult.data?.status, queryResult.data?.progress_percentage, isRealtimeConnected, isRealtimeActive]);
 
-
-<<<<<<< HEAD
-=======
-      // TIMEOUT CHECK: 15 minutes
-      if (elapsedSeconds > 900) {
-        setIsTimedOut(true);
-        queryClient.setQueryData(['job-status', jobId], (old: VideoJob) => ({
-          ...old,
-          status: 'failed',
-          error_message: 'The operation timed out. Please try again.',
-          progress_percentage: 100
-        }));
-        clearInterval(intervalId);
-        return;
-      }
-
-      // PROGRESS SIMULATION
-      // Only simulate if real progress is lagging behind simulated "expected" progress
-      // But respect real updates if they jump ahead
-      if (elapsedSeconds <= 600) {
-        let simulatedProgress = (elapsedSeconds / 600) * 95;
-        if (simulatedProgress > 95) simulatedProgress = 95;
-
-        // Ensure we don't overwrite real data if real data is higher?
-        // Actually, we should only update IF status is 'processing'
-        // and if simulated is > current. 
-        // CAUTION: This might fight with Realtime updates if we are not careful.
-        // Let's only update if we haven't received a Realtime update in X seconds?
-        // Simpler: Just update if simulated > current
-
-        const currentProgress = job.progress_percentage || 0;
-        if (simulatedProgress > currentProgress && job.status !== 'completed') {
-          // We do NOT setQueryData here because it overwrites real data from polling/realtime
-          // Instead, we should just let the UI handle smooth interpolation or ONLY update if 
-          // we want to fake it. 
-          // If N8N is updating, we want N8N values.
-          // Commenting out simulation to prioritize Real Truth from DB for debugging.
-          // queryClient.setQueryData(...) 
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [jobId, queryResult.data, queryClient]);
->>>>>>> c14f9e5 (fix(realtime): robust subscription logic and UI badges)
-
-  return { ...queryResult, isConnected };
+  return { ...queryResult, isRealtimeConnected, isRealtimeActive };
 }
