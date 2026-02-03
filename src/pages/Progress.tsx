@@ -99,7 +99,7 @@ function LiveTimeline({ currentStep, progress }: { currentStep?: string; progres
 export function ProgressPage() {
   const { jobId } = useParams<{ jobId: string }>();
   const navigate = useNavigate();
-  const { data: job, isLoading } = useJobStatus(jobId);
+  const { data: job, isLoading, isRealtimeConnected, isRealtimeActive } = useJobStatus(jobId);
 
   const handleDownload = async () => {
     if (job?.video_url) {
