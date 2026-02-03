@@ -367,13 +367,13 @@ export function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {[
               {
-                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/featured_campaign_1770130415611.mp4',
-                title: 'New Season Launch',
-                category: 'Fashion & Lifestyle',
-                metric: 'TRENDING'
+                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.mp4',
+                title: 'Beard Care Premium',
+                category: 'Beauty & Grooming',
+                metric: '+42% ROAS'
               },
               {
                 url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd.mp4',
@@ -386,6 +386,12 @@ export function Landing() {
                 title: 'Scented Candles',
                 category: 'Home & Lifestyle',
                 metric: '4.1% CTR'
+              },
+              {
+                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/featured_campaign_1770130415611.mp4',
+                title: 'Anker Earbuds',
+                category: 'Tech Gadgets',
+                metric: 'BEST SELLER'
               }
             ].map((ad, idx) => (
               <motion.div
