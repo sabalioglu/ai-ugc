@@ -39,7 +39,7 @@ serve(async (req) => {
       progress_percentage: 50
     }).eq('job_id', record.job_id);
 
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyAXXaJA9uyS9loxITDu7CsxvTGbTz5jt88';
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
 
     // Prepare character data for LLM
     const charData = record.character_model || {};

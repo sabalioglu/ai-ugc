@@ -29,7 +29,7 @@ serve(async (req) => {
     console.log("[ugc-char-gen] Stage 1: Generating expert character prompt...");
 
     // Construct the prompt for Gemini using the "AI Photography Expert" logic
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') || 'AIzaSyAXXaJA9uyS9loxITDu7CsxvTGbTz5jt88';
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
     const characterExpertPrompt = `
 You are an elite AI photography prompt engineer specializing in ultra-realistic human character generation for commercial UGC video production.
 
