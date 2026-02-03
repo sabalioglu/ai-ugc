@@ -262,8 +262,8 @@ export function Landing() {
             {/* Down Arrow */}
             <div className="flex justify-center">
               <svg width="40" height="60" viewBox="0 0 40 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-bounce">
-                <path d="M20 5 L20 50" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round" strokeDasharray="2 4"/>
-                <path d="M10 40 L20 50 L30 40" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                <path d="M20 5 L20 50" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round" strokeDasharray="2 4" />
+                <path d="M10 40 L20 50 L30 40" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
               </svg>
             </div>
           </div>
@@ -285,7 +285,7 @@ export function Landing() {
                   <span className="text-white text-[9px] font-black tracking-widest uppercase">Before: Photo</span>
                 </div>
               </div>
-              
+
               {/* Premium Curvy Red Arrow (Mockup Style) */}
               <div className="absolute -right-16 md:-right-24 top-1/2 -translate-y-1/2 hidden md:block z-20 pointer-events-none">
                 <svg width="100" height="60" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="filter drop-shadow-[0_4px_12px_rgba(255,100,100,0.4)]">
@@ -370,10 +370,10 @@ export function Landing() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
               {
-                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/BeardAD.mp4',
-                title: 'Beard Care Premium',
-                category: 'Beauty & Grooming',
-                metric: '+42% ROAS'
+                url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/featured_campaign_1770130415611.mp4',
+                title: 'New Season Launch',
+                category: 'Fashion & Lifestyle',
+                metric: 'TRENDING'
               },
               {
                 url: 'https://yiwezubimkzkqxzbfodn.supabase.co/storage/v1/object/public/Videos/ProteinAd.mp4',
